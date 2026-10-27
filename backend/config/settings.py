@@ -32,6 +32,17 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = [h.strip() for h in env("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
+# The React dev server (Vite, port 5173) forwards /api requests to Django.
+# Its address must be trusted for CSRF protection to accept those requests.
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in env("DJANGO_CSRF_TRUSTED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+    if o.strip()
+]
+SESSION_COOKIE_HTTPONLY = True      # JavaScript cannot read the login cookie
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "apps.accounts",
     "apps.datasets",
     "apps.analytics",
 ]
@@ -114,6 +126,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    # Every error is returned as {"error": {"type", "message", "details"}}.
+    "EXCEPTION_HANDLER": "config.exceptions.api_exception_handler",
     # The clickable "browsable API" page is only useful while developing.
     "DEFAULT_RENDERER_CLASSES": (
         ["rest_framework.renderers.JSONRenderer", "rest_framework.renderers.BrowsableAPIRenderer"]

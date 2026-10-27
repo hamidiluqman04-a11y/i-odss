@@ -226,25 +226,51 @@ def pricing_analysis(rows, margin=DEFAULT_MARGIN):
     }
 
 
+def promo_inputs(rows):
+    """
+    The per-product summary the promo simulator needs: current price, average
+    weekly units and the PED estimate. Saving this (instead of the raw rows)
+    lets promotions be simulated later without keeping the uploaded file.
+    """
+    first_day = min(r["date"] for r in rows)
+    days = count_days(rows)
+    inputs = {}
+    for sku, sku_rows in _sku_groups(rows).items():
+        current_price, weekly_units = _baseline(sku_rows, days)
+        status, est = estimate_ped(_weekly_price_and_units(sku_rows, first_day, days // 7))
+        inputs[sku] = {
+            "product": sku_rows[-1]["product"],
+            "current_price": current_price,
+            "weekly_units": weekly_units,
+            "ped_status": status,
+            "ped": est["ped"] if est else None,
+            "reliability": est["reliability"] if est else None,
+        }
+    return inputs
+
+
 def simulate_promo(rows, sku, discount_pct, margin=DEFAULT_MARGIN):
+    """Promo simulation straight from the clean rows (see simulate_promo_from)."""
+    inputs = promo_inputs(rows).get(sku)
+    if inputs is None:
+        raise LookupError(f"SKU '{sku}' not found in the uploaded data.")
+    return simulate_promo_from(sku, inputs, discount_pct, margin)
+
+
+def simulate_promo_from(sku, inputs, discount_pct, margin=DEFAULT_MARGIN):
     """
     What a discount on one product would do to weekly revenue and profit.
+    `inputs` is one product's entry from promo_inputs().
     The break-even volume increase is always exact; the projected volume
-    change is only given when PED could be estimated from the data.
+    change is only given when PED could be estimated reliably from the data.
     """
     _check_margin(margin)
     if isinstance(discount_pct, bool) or not isinstance(discount_pct, (int, float)) or not 1 <= discount_pct <= 80:
         raise ValueError("Discount must be a number between 1 and 80 (%).")
-    sku_rows = [r for r in rows if r["sku"] == sku]
-    if not sku_rows:
-        raise LookupError(f"SKU '{sku}' not found in the uploaded data.")
 
     d = discount_pct / 100
-    first_day = min(r["date"] for r in rows)
-    days = count_days(rows)
-    current_price, weekly_units = _baseline(sku_rows, days)
-    status, est = estimate_ped(_weekly_price_and_units(sku_rows, first_day, days // 7))
-    name = sku_rows[-1]["product"]
+    current_price, weekly_units = inputs["current_price"], inputs["weekly_units"]
+    ped, reliability, name = inputs["ped"], inputs["reliability"], inputs["product"]
 
     # Profit per unit falls from margin×p to (margin−d)×p, so units must rise by d/(margin−d).
     break_even = round(d / (margin - d) * 100, 1) if d < margin else None
@@ -254,8 +280,7 @@ def simulate_promo(rows, sku, discount_pct, margin=DEFAULT_MARGIN):
         "discounted_price": round(current_price * (1 - d), 2),
         "margin_assumption": margin,
         "break_even_volume_increase_pct": break_even,
-        "ped_status": status, "ped": est["ped"] if est else None,
-        "reliability": est["reliability"] if est else None,
+        "ped_status": inputs["ped_status"], "ped": ped, "reliability": reliability,
         "projection": None, "volume_change_pct": None, "is_profitable_estimate": None,
     }
 
@@ -269,13 +294,13 @@ def simulate_promo(rows, sku, discount_pct, margin=DEFAULT_MARGIN):
             f"With a {margin * 100:.0f}% margin, a {discount_pct}% discount on '{name}' only pays off if "
             f"you sell at least {break_even:.0f}% more units than now. "
         )
-        if est and est["reliability"] == "strong" and est["ped"] < 0:
-            proj = project(weekly_units, current_price, est["ped"], margin, -d)
+        if reliability == "strong" and ped < 0:
+            proj = project(weekly_units, current_price, ped, margin, -d)
             volume_change = round((proj["weekly_units_new"] / proj["weekly_units_now"] - 1) * 100, 1)
             profitable = proj["weekly_profit_new"] > proj["weekly_profit_now"]
             result.update(projection=proj, volume_change_pct=volume_change, is_profitable_estimate=profitable)
             explain += (
-                f"Your past sales (PED {est['ped']}) suggest about {volume_change:.0f}% more units, so this "
+                f"Your past sales (PED {ped}) suggest about {volume_change:.0f}% more units, so this "
                 f"promotion is estimated to {'raise' if profitable else 'lower'} weekly profit "
                 f"({proj['weekly_profit_now']:.2f} → {proj['weekly_profit_new']:.2f}). This is an estimate, "
                 f"not a guarantee."
