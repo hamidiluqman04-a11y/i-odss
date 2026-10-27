@@ -2,8 +2,46 @@
 ### CDCS230 Final Year Project | FastAPI + Vanilla JS
 
 > **Upgrade in progress:** the project is being migrated to Django + React + PostgreSQL
-> (new code in `backend/`). The original FastAPI prototype described below now lives
-> in `legacy/` and keeps working until its replacement is tested.
+> (new code in `backend/` and `frontend/`). The original FastAPI prototype described below
+> now lives in `legacy/` and keeps working until its replacement is tested.
+
+## Running the new app (development)
+
+Needs Python 3.13, Node.js 20+ and PostgreSQL. First-time setup (Windows PowerShell, from the project root):
+
+```bash
+python -m venv .venv
+.venv\Scripts\python -m pip install -r backend\requirements.txt
+copy backend\.env.example backend\.env
+```
+
+Edit `backend\.env` (secret key, database password, demo password), then from `backend\`:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts\setup_db.ps1
+..\.venv\Scripts\python manage.py migrate
+..\.venv\Scripts\python manage.py create_demo_user
+```
+
+Install the frontend once, from `frontend\`:
+
+```bash
+npm install
+```
+
+Every time — two terminals:
+
+```bash
+cd backend; ..\.venv\Scripts\python manage.py runserver
+```
+
+```bash
+cd frontend; npm run dev
+```
+
+Open http://localhost:5173 and log in with the demo account from `backend\.env`.
+
+Tests: `..\.venv\Scripts\python -m pytest` in `backend\`, and `npm test` in `frontend\`.
 
 ## Quick Start (legacy prototype)
 ```bash

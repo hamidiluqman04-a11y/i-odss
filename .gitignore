@@ -24,6 +24,7 @@ frontend/dist/
 *.csv
 !legacy/frontend/static/samples/*.csv
 !**/tests/fixtures/*.csv
+!frontend/public/samples/*.csv
 
 # Editors / OS
 .vscode/
