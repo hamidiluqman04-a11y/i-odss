@@ -64,6 +64,19 @@ describe("api client", () => {
     expect(err.type).toBe("csrf_failed");
   });
 
+  it("explains an empty 500 from the dev proxy when Django is down", async () => {
+    mockFetch(500, null, { json: false });
+    const err = await api.csrf().catch((e) => e);
+    expect(err.type).toBe("server_unreachable");
+    expect(err.message).toMatch(/not responding/);
+  });
+
+  it("keeps the API's own message for a JSON 500", async () => {
+    mockFetch(500, { error: { type: "server_error", message: "Something went wrong on the server. Please try again." } });
+    const err = await api.me().catch((e) => e);
+    expect(err.type).toBe("server_error");
+  });
+
   it("reports when the server cannot be reached", async () => {
     globalThis.fetch = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
     const err = await api.me().catch((e) => e);

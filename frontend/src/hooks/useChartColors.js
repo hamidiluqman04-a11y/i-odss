@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const TOKENS = ["series-1", "grid", "axis", "text-muted", "text-secondary", "surface"];
+const TOKENS = ["series-1", "series-2", "grid", "axis", "text-muted", "text-secondary", "surface"];
 
 function read() {
   const style = getComputedStyle(document.documentElement);

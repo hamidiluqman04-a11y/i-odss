@@ -102,7 +102,7 @@ export default function UploadPage() {
       </div>
 
       <div className="upload-grid">
-        <form className="card stack" onSubmit={submit}>
+        <form className="card stack" onSubmit={submit} noValidate>
           <div
             className={`dropzone${dragging ? " dragging" : ""}`}
             role="button"

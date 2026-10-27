@@ -1,66 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import HorizontalBarChart from "../charts/HorizontalBarChart";
 import WeeklySalesChart from "../charts/WeeklySalesChart";
 import ChartCard from "../components/ChartCard";
-import { EmptyState, ErrorState, LoadingState } from "../components/States";
+import ResultPage from "../components/ResultPage";
+import { Tile } from "../components/Tile";
 import { useCurrency } from "../hooks/useCurrency";
-import { useDatasets } from "../hooks/useDatasets";
-import { api } from "../services/api";
-import { formatDate, formatMoneyShort, formatNumber } from "../services/format";
+import { formatMoneyShort, formatNumber } from "../services/format";
 
 export default function DashboardPage() {
-  const { current, status: listStatus, error: listError, refresh } = useDatasets();
-  const [data, setData] = useState(null);
-  const [state, setState] = useState("idle"); // idle | loading | ready | error
-  const [error, setError] = useState(null);
-
-  const load = useCallback(async (id) => {
-    setState("loading");
-    setError(null);
-    try {
-      setData(await api.getResult(id, "dashboard"));
-      setState("ready");
-    } catch (err) {
-      setError(err);
-      setState("error");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (current) load(current.id);
-    else setData(null);
-  }, [current, load]);
-
-  if (listStatus === "loading") return <LoadingState message="Loading your datasets…" />;
-  if (listStatus === "error") return <ErrorState error={listError} onRetry={refresh} />;
-  if (!current) {
-    return (
-      <EmptyState title="No data yet" action={<Link className="btn btn-primary" to="/upload">Upload a CSV file</Link>}>
-        Upload your sales export to see revenue, best sellers, forecasts and recommendations.
-      </EmptyState>
-    );
-  }
-
   return (
-    <div className="stack">
-      <div className="page-header">
-        <div>
-          <h1>Dashboard</h1>
-          <p className="secondary">
-            {current.original_filename} · {formatDate(current.date_start)} – {formatDate(current.date_end)} ·{" "}
-            {formatNumber(current.row_count)} rows
-          </p>
-        </div>
-      </div>
-      {state === "loading" && !data && <LoadingState message="Loading results…" />}
-      {state === "error" && <ErrorState error={error} onRetry={() => load(current.id)} />}
-      {data && (
-        <div className="stack" style={{ opacity: state === "loading" ? 0.5 : 1 }}>
-          <Dashboard data={data} />
-        </div>
-      )}
-    </div>
+    <ResultPage kind="dashboard" title="Dashboard">
+      {(data) => <Dashboard data={data} />}
+    </ResultPage>
   );
 }
 
@@ -143,16 +93,6 @@ export function Dashboard({ data }) {
         </div>
       </section>
     </>
-  );
-}
-
-function Tile({ label, value, note }) {
-  return (
-    <div className="card tile">
-      <div className="tile-label">{label}</div>
-      <div className="tile-value">{value}</div>
-      {note && <div className="tile-note">{note}</div>}
-    </div>
   );
 }
 

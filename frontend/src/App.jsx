@@ -3,8 +3,12 @@ import Layout from "./components/Layout";
 import { EmptyState, ErrorState, LoadingState } from "./components/States";
 import { useAuth } from "./hooks/useAuth";
 import { DatasetProvider } from "./hooks/useDatasets";
+import BundlesPage from "./pages/BundlesPage";
 import DashboardPage from "./pages/DashboardPage";
+import ForecastPage from "./pages/ForecastPage";
+import InventoryPage from "./pages/InventoryPage";
 import LoginPage from "./pages/LoginPage";
+import PricingPage from "./pages/PricingPage";
 import UploadPage from "./pages/UploadPage";
 
 function RequireLogin({ children }) {
@@ -39,6 +43,10 @@ export default function App() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="forecast" element={<ForecastPage />} />
+        <Route path="bundles" element={<BundlesPage />} />
+        <Route path="pricing" element={<PricingPage />} />
+        <Route path="inventory" element={<InventoryPage />} />
         <Route path="upload" element={<UploadPage />} />
         <Route
           path="*"

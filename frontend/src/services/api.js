@@ -54,6 +54,11 @@ async function request(path, { method = "GET", json, form } = {}) {
     if (!err && response.status === 403) {
       throw new ApiError(403, "csrf_failed", "Your security token has expired. Please refresh the page and try again.");
     }
+    if (!err && response.status >= 500) {
+      // No JSON body: Django is down or still starting (the dev proxy answers for it).
+      throw new ApiError(response.status, "server_unreachable",
+        "The I-ODSS server is not responding. Check that the backend is running, then try again.");
+    }
     const { type, message, details, ...extra } = err ?? {};
     throw new ApiError(
       response.status,
