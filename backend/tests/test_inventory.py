@@ -83,6 +83,16 @@ def test_warning_band_is_within_30_percent_above_rop():
     assert "reorder point of 7 units in roughly 2 days" in item["plain_explain"]
 
 
+def test_daily_demand_uses_calendar_days_for_sparse_sales():
+    # 10 units sold on 5 days of a 30-day period: 10 / 30 = 0.333/day (legacy: 10 / 5 = 2/day)
+    csv = "Date,SKU,Category,Quantity,UnitPrice\n" + "".join(
+        f"2025-01-{d:02d},A,Skincare,2,10\n" for d in (1, 8, 15, 22, 30)
+    )
+    item = inventory_report(rows_of(csv))["items"][0]
+    # Skincare: SS = 0.333 x 1.4 = 0.5; ROP = 0.333 x 6 + 0.5 = 2.5 (legacy would give 14.8)
+    assert (item["velocity"], item["safety_stock"], item["rop"]) == (0.333, 0.5, 2.5)
+
+
 def test_critical_items_listed_first():
     statuses = [i["status"] for i in inventory_report(rows_of(CSV_WITH_STOCK))["items"]]
     assert statuses == ["critical", "ok"]

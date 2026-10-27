@@ -34,12 +34,14 @@ def sku_summary(rows):
 
 def count_days(rows):
     """
-    Number of distinct days that have at least one sale (legacy behaviour).
+    Calendar days covered by the data, from the first to the last sale date.
 
-    Known limitation: days with zero sales are not counted, so daily demand is
-    overstated when sales are sparse. Kept unchanged until a decision is made.
+    Changed from the legacy app, which counted only days that had a sale and
+    so overstated daily demand when sales were sparse (e.g. 10 units sold on
+    5 days of a 30-day period gave 2/day instead of 0.33/day).
     """
-    return max(len({r["date"] for r in rows}), 1)
+    dates = [r["date"] for r in rows]
+    return (max(dates) - min(dates)).days + 1
 
 
 def dashboard_metrics(rows, inventory):

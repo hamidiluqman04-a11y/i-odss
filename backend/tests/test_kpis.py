@@ -47,7 +47,19 @@ def test_metrics_on_tiny_dataset():
     )
     m = kpis.dashboard_metrics(rows, inventory_report(rows))
     assert m == {"revenue": 35.0, "orders": 2, "units": 4, "aov": 17.5,
-                 "skus_count": 2, "days_of_data": 2, "at_risk": None}
+                 "skus_count": 2, "days_of_data": 3, "at_risk": None}
+
+
+def test_days_of_data_counts_calendar_days_not_sale_days():
+    # Sales on 5 separate days spread over 30 calendar days.
+    rows = rows_of("Date,SKU,Quantity,UnitPrice\n" + "".join(
+        f"2025-01-{d:02d},A,2,10\n" for d in (1, 8, 15, 22, 30)
+    ))
+    assert kpis.count_days(rows) == 30            # legacy app counted 5
+
+
+def test_single_day_of_data_counts_as_one():
+    assert kpis.count_days(rows_of("Date,SKU,Quantity,UnitPrice\n2025-01-01,A,1,10\n")) == 1
 
 
 def test_at_risk_counts_critical_items_when_stock_known():

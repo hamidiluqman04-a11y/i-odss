@@ -2,9 +2,10 @@
 Inventory: reorder point (ROP) and restock status per product.
 
 Ported from legacy/backend/main.py (/api/inventory). The ROP formula and its
-rounding are unchanged:
+rounding are unchanged, except that daily demand now divides by calendar
+days (first to last sale date) instead of days that had a sale:
 
-    daily demand   = units sold / days with sales
+    daily demand   = units sold / calendar days in the data
     safety stock   = daily demand × category safety factor
     reorder point  = daily demand × supplier lead time + safety stock
 
