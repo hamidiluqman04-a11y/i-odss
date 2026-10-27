@@ -20,6 +20,8 @@ upload_csv). Behaviour is the same except for these deliberate fixes:
      counted error messages, so one bad row could count as several.
   8. An optional stock column is read, so inventory can use real stock
      levels instead of simulated ones.
+  9. Semicolon- and tab-separated files are accepted; in semicolon files a
+     comma is read as the decimal point ("10,50" = 10.50).
 """
 import csv
 import io
@@ -152,7 +154,27 @@ def _optional_number(text, cast):
     return cast(value) if math.isfinite(value) else None
 
 
-def parse_rows(raw_rows, mapping):
+def detect_delimiter(text):
+    """
+    Comma, semicolon or tab — whichever appears most in the header line.
+    Excel in many countries saves "CSV" files with semicolons.
+    """
+    header = text.split("\n", 1)[0]
+    counts = {d: header.count(d) for d in (",", ";", "\t")}
+    best = max(counts, key=counts.get)  # ties go to the comma
+    return best if counts[best] else ","
+
+
+def parse_price(text, decimal_comma=False):
+    """'1,250.50' -> 1250.5; with decimal_comma=True, '1.250,50' -> 1250.5."""
+    if decimal_comma:
+        text = text.replace(".", "").replace(",", ".")
+    else:
+        text = text.replace(",", "")
+    return float(text)
+
+
+def parse_rows(raw_rows, mapping, decimal_comma=False):
     """
     Validate each row. Returns (clean_rows, error_messages, skipped_row_count).
     Bad rows are skipped; each problem is reported with its row number.
@@ -195,7 +217,7 @@ def parse_rows(raw_rows, mapping):
         raw_price = _cell(raw, h("price"))
         price = None
         try:
-            price_value = float(raw_price.replace(",", ""))
+            price_value = parse_price(raw_price, decimal_comma)
             if not math.isfinite(price_value) or price_value <= 0:
                 row_errors.append(f"Row {line_no}: '{h('price')}' must be positive, got '{raw_price}'")
             else:
@@ -254,7 +276,8 @@ def parse_csv(filename, content):
         raise CSVValidationError("encoding_error", "Cannot decode file. Save it as UTF-8 CSV and re-upload.")
 
     try:
-        reader = csv.DictReader(io.StringIO(text))
+        delimiter = detect_delimiter(text)
+        reader = csv.DictReader(io.StringIO(text), delimiter=delimiter)
         raw_rows = list(reader)
         headers = reader.fieldnames or []
     except csv.Error as exc:
@@ -273,7 +296,8 @@ def parse_csv(filename, content):
             detected_headers=list(headers)[:20],
         )
 
-    rows, errors, skipped = parse_rows(raw_rows, mapping)
+    # Semicolon files come from regions that write decimals with a comma ("10,50").
+    rows, errors, skipped = parse_rows(raw_rows, mapping, decimal_comma=(delimiter == ";"))
     if not rows:
         raise CSVValidationError(
             "no_valid_rows",

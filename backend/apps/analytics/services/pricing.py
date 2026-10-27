@@ -75,15 +75,25 @@ def estimate_ped(weekly):
 
     fit = sm.OLS(np.log(units), sm.add_constant(np.log(prices))).fit()
     low, high = fit.conf_int(alpha=0.05)[1]
+    # With perfectly flat sales some statistics are 0/0 (NaN): treat them as "no evidence".
     p_value = float(fit.pvalues[1]) if math.isfinite(fit.pvalues[1]) else 1.0
+    ped = _rounded(fit.params[1], 2)
+    if ped is None:
+        return "insufficient_price_variation", None
     return "estimated", {
-        "ped": round(float(fit.params[1]), 2),
-        "ped_ci_low": round(float(low), 2),
-        "ped_ci_high": round(float(high), 2),
+        "ped": ped,
+        "ped_ci_low": _rounded(low, 2),
+        "ped_ci_high": _rounded(high, 2),
         "p_value": round(p_value, 4),
-        "r_squared": round(float(fit.rsquared), 3),
+        "r_squared": _rounded(fit.rsquared, 3),
         "reliability": "strong" if p_value < SIGNIFICANCE else "weak",
     }
+
+
+def _rounded(value, digits):
+    """Round a statistic, or None when it is not a real number (NaN / infinity)."""
+    value = float(value)
+    return round(value, digits) if math.isfinite(value) else None
 
 
 def project(weekly_units, price, ped, margin, change):
@@ -136,9 +146,10 @@ def _explain(item, n_weeks):
         )
     ped, low, high = item["ped"], item["ped_ci_low"], item["ped_ci_high"]
     if item["reliability"] == "weak":
+        spread = f", could be anywhere from {low} to {high}" if low is not None and high is not None else ""
         return (
             f"'{name}' was sold at different prices, but its sales did not move in a clear pattern with "
-            f"price (PED {ped}, could be anywhere from {low} to {high}). No price change is suggested."
+            f"price (PED {ped}{spread}). No price change is suggested."
         )
     if ped >= 0:
         return (

@@ -128,6 +128,12 @@ REST_FRAMEWORK = {
     ],
     # Every error is returned as {"error": {"type", "message", "details"}}.
     "EXCEPTION_HANDLER": "config.exceptions.api_exception_handler",
+    # Rate limits per IP address, to slow down password guessing and spam sign-ups.
+    # Counters live in Django's cache (in memory for one development server).
+    "DEFAULT_THROTTLE_RATES": {
+        "login": "10/min",
+        "register": "5/hour",
+    },
     # The clickable "browsable API" page is only useful while developing.
     "DEFAULT_RENDERER_CLASSES": (
         ["rest_framework.renderers.JSONRenderer", "rest_framework.renderers.BrowsableAPIRenderer"]

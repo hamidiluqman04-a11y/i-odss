@@ -95,6 +95,35 @@ def test_login_and_logout_require_csrf_token(user):
     assert strict.post("/api/auth/logout/", HTTP_X_CSRFTOKEN=token).status_code == 204
 
 
+def test_repeated_login_attempts_are_rate_limited(client, user):
+    for _ in range(10):
+        assert login(client, password="wrong").status_code == 401
+    r = login(client)                       # even the right password is refused for now
+    assert r.status_code == 429
+    body = r.json()["error"]
+    assert body["type"] == "throttled"
+    assert body["message"].startswith("Too many attempts. Please wait")
+    assert "Retry-After" in r.headers
+
+
+def test_rate_limit_is_per_ip_address(client, user):
+    for _ in range(10):
+        login(client, password="wrong")
+    other_ip = client.post("/api/auth/login/", {"email": "seller@example.com", "password": PASSWORD},
+                           content_type="application/json", REMOTE_ADDR="10.0.0.2")
+    assert other_ip.status_code == 200
+
+
+def test_registration_is_rate_limited(client, db):
+    for i in range(5):
+        client.post("/api/auth/register/", {"name": "A", "email": f"user{i}@shop.my", "password": "kopi-susu-2025!"},
+                    content_type="application/json")
+        client.logout()
+    r = client.post("/api/auth/register/", {"name": "A", "email": "user9@shop.my", "password": "kopi-susu-2025!"},
+                    content_type="application/json")
+    assert r.status_code == 429
+
+
 def test_session_cookie_is_httponly(client, user):
     login(client)
     assert client.cookies["sessionid"]["httponly"]

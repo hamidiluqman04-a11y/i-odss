@@ -7,10 +7,11 @@ Unexpected server errors are logged in full but the client only sees a
 generic message — no stack traces, file paths or database details.
 """
 import logging
+import math
 
 from django.http import Http404
 from rest_framework import status
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import NotFound, Throttled, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
@@ -36,7 +37,10 @@ def api_exception_handler(exc, context):
             status.HTTP_500_INTERNAL_SERVER_ERROR, "server_error",
             "Something went wrong on the server. Please try again.",
         )
-    if isinstance(exc, ValidationError):
+    if isinstance(exc, Throttled):
+        wait = f" Please wait {math.ceil(exc.wait)} seconds and try again." if exc.wait else " Please try again later."
+        response.data = {"error": {"type": "throttled", "message": "Too many attempts." + wait}}
+    elif isinstance(exc, ValidationError):
         response.data = {"error": {
             "type": "validation_error", "message": "Some of the submitted values are invalid.",
             "details": response.data,

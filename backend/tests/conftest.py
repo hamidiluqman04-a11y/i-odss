@@ -20,6 +20,13 @@ def load_legacy_snapshot(name):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@pytest.fixture(autouse=True)
+def reset_rate_limits():
+    """Rate-limit counters live in the cache; start every test with none."""
+    from django.core.cache import cache
+    cache.clear()
+
+
 @pytest.fixture(params=SAMPLE_FILES)
 def sample(request):
     """Runs a test once per sample file: gives (parsed_csv, legacy_snapshot)."""
