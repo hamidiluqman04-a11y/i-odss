@@ -1,13 +1,23 @@
 # I-ODSS v8 — Intelligent Operational Decision Support System
 ### CDCS230 Final Year Project | FastAPI + Vanilla JS
 
-## Quick Start
+> **Upgrade in progress:** the project is being migrated to Django + React + PostgreSQL
+> (new code in `backend/`). The original FastAPI prototype described below now lives
+> in `legacy/` and keeps working until its replacement is tested.
+
+## Quick Start (legacy prototype)
 ```bash
-# Windows: double-click run.bat
+# Windows: double-click legacy\run.bat
 # Manual:
-cd backend
+cd legacy
 python -m pip install -r requirements.txt
+cd backend
 python -m uvicorn main:app --reload --port 8000
+```
+
+Legacy baseline tests (from the project root):
+```bash
+.venv\Scripts\python -m pytest legacy\tests
 ```
 Open: http://localhost:8000
 
