@@ -1,0 +1,791 @@
+{
+  "upload": {
+    "success": true,
+    "rows": 150,
+    "filename": "data_electronics.csv",
+    "skus": 8,
+    "date_range": "2025-01-03 to 2025-03-19",
+    "col_map": {
+      "order_id": "OrderID",
+      "sku": "SKU",
+      "date": "Date",
+      "qty": "Quantity",
+      "price": "UnitPrice",
+      "category": "Category",
+      "region": "Region",
+      "rating": "Rating",
+      "returns": "Returns"
+    },
+    "warnings": [],
+    "warning_count": 0
+  },
+  "metrics": {
+    "revenue": 36232.0,
+    "orders": 150,
+    "units": 273,
+    "aov": 241.55,
+    "skus_count": 8,
+    "at_risk": 6,
+    "days_of_data": 76,
+    "filename": "data_electronics.csv",
+    "rows": 150
+  },
+  "inventory": {
+    "items": [
+      {
+        "sku": "SKU-001",
+        "product": "SKU-001",
+        "category": "Peripherals",
+        "stock": 4,
+        "rop": 4.5,
+        "lead": 5,
+        "velocity": 0.697,
+        "safety_stock": 1.0,
+        "status": "critical",
+        "revenue": 10017.0,
+        "total_sold": 53,
+        "reorder_qty": 3,
+        "avg_rating": 4.9,
+        "return_rate": 3.8,
+        "days_until_stockout": 5.7,
+        "plain_explain": "This item sells at a velocity of 0.7 unit/day. Because your supplier takes 5 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=4.5: daily demand 0.70 u/day × lead 5 days + safety stock 1.0 units. Simulated stock=4 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-005",
+        "product": "SKU-005",
+        "category": "Electronics",
+        "stock": 2,
+        "rop": 4.0,
+        "lead": 8,
+        "velocity": 0.408,
+        "safety_stock": 0.7,
+        "status": "critical",
+        "revenue": 6665.0,
+        "total_sold": 31,
+        "reorder_qty": 5,
+        "avg_rating": 4.6,
+        "return_rate": 0.0,
+        "days_until_stockout": 4.9,
+        "plain_explain": "This item sells at a velocity of 0.4 units/day. Because your supplier takes 8 days to ship new inventory, you will run out of stock in about 5 days if you do not reorder now.",
+        "xai": "ROP=4.0: daily demand 0.41 u/day × lead 8 days + safety stock 0.7 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-004",
+        "product": "SKU-004",
+        "category": "Peripherals",
+        "stock": 2,
+        "rop": 2.6,
+        "lead": 5,
+        "velocity": 0.408,
+        "safety_stock": 0.6,
+        "status": "critical",
+        "revenue": 1178.0,
+        "total_sold": 31,
+        "reorder_qty": 2,
+        "avg_rating": 4.4,
+        "return_rate": 0.0,
+        "days_until_stockout": 4.9,
+        "plain_explain": "This item sells at a velocity of 0.4 units/day. Because your supplier takes 5 days to ship new inventory, you will run out of stock in about 5 days if you do not reorder now.",
+        "xai": "ROP=2.6: daily demand 0.41 u/day × lead 5 days + safety stock 0.6 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-009",
+        "product": "SKU-009",
+        "category": "Electronics",
+        "stock": 6,
+        "rop": 9.2,
+        "lead": 8,
+        "velocity": 0.934,
+        "safety_stock": 1.7,
+        "status": "critical",
+        "revenue": 11005.0,
+        "total_sold": 71,
+        "reorder_qty": 9,
+        "avg_rating": 4.8,
+        "return_rate": 0.0,
+        "days_until_stockout": 6.4,
+        "plain_explain": "This item sells at a velocity of 0.9 unit/day. Because your supplier takes 8 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=9.2: daily demand 0.93 u/day × lead 8 days + safety stock 1.7 units. Simulated stock=6 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-007",
+        "product": "SKU-007",
+        "category": "Electronics",
+        "stock": 2,
+        "rop": 3.6,
+        "lead": 8,
+        "velocity": 0.368,
+        "safety_stock": 0.7,
+        "status": "critical",
+        "revenue": 2744.0,
+        "total_sold": 28,
+        "reorder_qty": 4,
+        "avg_rating": 4.5,
+        "return_rate": 0.0,
+        "days_until_stockout": 5.4,
+        "plain_explain": "This item sells at a velocity of 0.4 units/day. Because your supplier takes 8 days to ship new inventory, you will run out of stock in about 5 days if you do not reorder now.",
+        "xai": "ROP=3.6: daily demand 0.37 u/day × lead 8 days + safety stock 0.7 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-002",
+        "product": "SKU-002",
+        "category": "Peripherals",
+        "stock": 2,
+        "rop": 2.1,
+        "lead": 5,
+        "velocity": 0.329,
+        "safety_stock": 0.5,
+        "status": "critical",
+        "revenue": 1125.0,
+        "total_sold": 25,
+        "reorder_qty": 1,
+        "avg_rating": 4.1,
+        "return_rate": 8.0,
+        "days_until_stockout": 6.1,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 5 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=2.1: daily demand 0.33 u/day × lead 5 days + safety stock 0.5 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-003",
+        "product": "SKU-003",
+        "category": "Accessories",
+        "stock": 2,
+        "rop": 1.5,
+        "lead": 4,
+        "velocity": 0.289,
+        "safety_stock": 0.3,
+        "status": "ok",
+        "revenue": 2838.0,
+        "total_sold": 22,
+        "reorder_qty": 0,
+        "avg_rating": 4.6,
+        "return_rate": 0.0,
+        "days_until_stockout": 6.9,
+        "plain_explain": "You're selling 0.3 units/day and have enough stock to last ~7 days — well beyond your 4-day supplier lead time. No action needed right now.",
+        "xai": "ROP=1.5: daily demand 0.29 u/day × lead 4 days + safety stock 0.3 units. Simulated stock=2 → healthy."
+      },
+      {
+        "sku": "SKU-011",
+        "product": "SKU-011",
+        "category": "Accessories",
+        "stock": 2,
+        "rop": 0.8,
+        "lead": 4,
+        "velocity": 0.158,
+        "safety_stock": 0.2,
+        "status": "ok",
+        "revenue": 660.0,
+        "total_sold": 12,
+        "reorder_qty": 0,
+        "avg_rating": 4.3,
+        "return_rate": 0.0,
+        "days_until_stockout": 12.7,
+        "plain_explain": "You're selling 0.2 units/day and have enough stock to last ~13 days — well beyond your 4-day supplier lead time. No action needed right now.",
+        "xai": "ROP=0.8: daily demand 0.16 u/day × lead 4 days + safety stock 0.2 units. Simulated stock=2 → healthy."
+      }
+    ],
+    "critical_count": 6
+  },
+  "pricing": {
+    "items": [
+      {
+        "sku": "SKU-009",
+        "product": "SKU-009",
+        "category": "Electronics",
+        "avg_price": 155.0,
+        "ped": 0.77,
+        "action": "increase",
+        "pct": 3.2,
+        "new_price": 159.96,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 11005.0,
+        "weekly_delta": 6.66,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-009' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.77) tells us. Raising the price by 3.2% should add roughly RM +6.66 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.77 for 'Electronics' (base=0.82, velocity modifier=0.94). Inelastic — raise price safely. Est. weekly revenue: RM 1013.62 → RM 1020.28 (Δ RM +6.66)."
+      },
+      {
+        "sku": "SKU-005",
+        "product": "SKU-005",
+        "category": "Electronics",
+        "avg_price": 215.0,
+        "ped": 0.82,
+        "action": "increase",
+        "pct": 2.5,
+        "new_price": 220.37,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 6665.0,
+        "weekly_delta": 2.44,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-005' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.82) tells us. Raising the price by 2.5% should add roughly RM +2.44 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.82 for 'Electronics' (base=0.82, velocity modifier=1.0). Inelastic — raise price safely. Est. weekly revenue: RM 613.88 → RM 616.32 (Δ RM +2.44)."
+      },
+      {
+        "sku": "SKU-001",
+        "product": "SKU-001",
+        "category": "Peripherals",
+        "avg_price": 189.0,
+        "ped": 1.21,
+        "action": "decrease",
+        "pct": 1.3,
+        "new_price": 186.54,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 10017.0,
+        "weekly_delta": 2.31,
+        "is_profitable": true,
+        "plain_explain": "'SKU-001' is price-sensitive (PED=1.21) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.3% is projected to grow weekly revenue by about RM +2.31, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.21 for 'Peripherals' (base=1.25, velocity modifier=0.97). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 922.62 → RM 924.93 (Δ RM +2.31)."
+      },
+      {
+        "sku": "SKU-007",
+        "product": "SKU-007",
+        "category": "Electronics",
+        "avg_price": 98.0,
+        "ped": 0.83,
+        "action": "increase",
+        "pct": 2.4,
+        "new_price": 100.35,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 2744.0,
+        "weekly_delta": 0.9,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-007' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.83) tells us. Raising the price by 2.4% should add roughly RM +0.90 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.83 for 'Electronics' (base=0.82, velocity modifier=1.01). Inelastic — raise price safely. Est. weekly revenue: RM 252.74 → RM 253.64 (Δ RM +0.90)."
+      },
+      {
+        "sku": "SKU-004",
+        "product": "SKU-004",
+        "category": "Peripherals",
+        "avg_price": 38.0,
+        "ped": 1.26,
+        "action": "decrease",
+        "pct": 1.6,
+        "new_price": 37.39,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 1178.0,
+        "weekly_delta": 0.41,
+        "is_profitable": true,
+        "plain_explain": "'SKU-004' is price-sensitive (PED=1.26) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.6% is projected to grow weekly revenue by about RM +0.41, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.26 for 'Peripherals' (base=1.25, velocity modifier=1.0). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 108.5 → RM 108.91 (Δ RM +0.41)."
+      },
+      {
+        "sku": "SKU-002",
+        "product": "SKU-002",
+        "category": "Peripherals",
+        "avg_price": 45.0,
+        "ped": 1.27,
+        "action": "decrease",
+        "pct": 1.6,
+        "new_price": 44.28,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 1125.0,
+        "weekly_delta": 0.41,
+        "is_profitable": true,
+        "plain_explain": "'SKU-002' is price-sensitive (PED=1.27) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.6% is projected to grow weekly revenue by about RM +0.41, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.27 for 'Peripherals' (base=1.25, velocity modifier=1.01). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 103.62 → RM 104.03 (Δ RM +0.41)."
+      },
+      {
+        "sku": "SKU-003",
+        "product": "SKU-003",
+        "category": "Accessories",
+        "avg_price": 129.0,
+        "ped": 0.97,
+        "action": "increase",
+        "pct": 0.2,
+        "new_price": 129.26,
+        "reason": "Mildly inelastic — modest increase",
+        "revenue": 2838.0,
+        "weekly_delta": 0.02,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-003' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.97) tells us. Raising the price by 0.2% should add roughly RM +0.02 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.97 for 'Accessories' (base=0.95, velocity modifier=1.02). Mildly inelastic — modest increase. Est. weekly revenue: RM 261.39 → RM 261.41 (Δ RM +0.02)."
+      },
+      {
+        "sku": "SKU-011",
+        "product": "SKU-011",
+        "category": "Accessories",
+        "avg_price": 55.0,
+        "ped": 0.98,
+        "action": "increase",
+        "pct": 0.2,
+        "new_price": 55.11,
+        "reason": "Mildly inelastic — modest increase",
+        "revenue": 660.0,
+        "weekly_delta": 0.0,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-011' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.98) tells us. Raising the price by 0.2% should add roughly RM +0.00 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.98 for 'Accessories' (base=0.95, velocity modifier=1.03). Mildly inelastic — modest increase. Est. weekly revenue: RM 60.79 → RM 60.79 (Δ RM +0.00)."
+      }
+    ]
+  },
+  "bundles": {
+    "pairs": [
+      {
+        "sku_a": "SKU-003",
+        "sku_b": "SKU-011",
+        "product_a": "SKU-003",
+        "product_b": "SKU-011",
+        "support": 0.0267,
+        "confidence": 0.333,
+        "lift": 2.28,
+        "count": 4,
+        "suggested_discount": 9,
+        "price_a": 129.0,
+        "price_b": 55.0,
+        "ideal_bundle_price": 167.44,
+        "cross_ped": -0.384,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-003, 33% also bought SKU-011 in the same order — that's 2.28× more often than if the two were unrelated. Packaging them together at RM 167.44 (9% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=2.28: customers buying SKU-003 are 2.28× more likely to also buy SKU-011 vs random chance. Cross-PED=-0.384 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-002",
+        "sku_b": "SKU-011",
+        "product_a": "SKU-002",
+        "product_b": "SKU-011",
+        "support": 0.0267,
+        "confidence": 0.333,
+        "lift": 2.0,
+        "count": 4,
+        "suggested_discount": 8,
+        "price_a": 45.0,
+        "price_b": 55.0,
+        "ideal_bundle_price": 92.0,
+        "cross_ped": -0.3,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-002, 33% also bought SKU-011 in the same order — that's 2.0× more often than if the two were unrelated. Packaging them together at RM 92.0 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=2.0: customers buying SKU-002 are 2.0× more likely to also buy SKU-011 vs random chance. Cross-PED=-0.3 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-002",
+        "sku_b": "SKU-003",
+        "product_a": "SKU-002",
+        "product_b": "SKU-003",
+        "support": 0.0467,
+        "confidence": 0.318,
+        "lift": 1.91,
+        "count": 7,
+        "suggested_discount": 8,
+        "price_a": 45.0,
+        "price_b": 129.0,
+        "ideal_bundle_price": 160.08,
+        "cross_ped": -0.273,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-002, 32% also bought SKU-003 in the same order — that's 1.91× more often than if the two were unrelated. Packaging them together at RM 160.08 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.91: customers buying SKU-002 are 1.91× more likely to also buy SKU-003 vs random chance. Cross-PED=-0.273 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-007",
+        "sku_b": "SKU-011",
+        "product_a": "SKU-007",
+        "product_b": "SKU-011",
+        "support": 0.0267,
+        "confidence": 0.333,
+        "lift": 1.79,
+        "count": 4,
+        "suggested_discount": 7,
+        "price_a": 98.0,
+        "price_b": 55.0,
+        "ideal_bundle_price": 142.29,
+        "cross_ped": -0.237,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-007, 33% also bought SKU-011 in the same order — that's 1.79× more often than if the two were unrelated. Packaging them together at RM 142.29 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.79: customers buying SKU-007 are 1.79× more likely to also buy SKU-011 vs random chance. Cross-PED=-0.237 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-002",
+        "sku_b": "SKU-007",
+        "product_a": "SKU-002",
+        "product_b": "SKU-007",
+        "support": 0.0533,
+        "confidence": 0.32,
+        "lift": 1.71,
+        "count": 8,
+        "suggested_discount": 7,
+        "price_a": 45.0,
+        "price_b": 98.0,
+        "ideal_bundle_price": 132.99,
+        "cross_ped": -0.213,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-002, 32% also bought SKU-007 in the same order — that's 1.71× more often than if the two were unrelated. Packaging them together at RM 132.99 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.71: customers buying SKU-002 are 1.71× more likely to also buy SKU-007 vs random chance. Cross-PED=-0.213 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-003",
+        "sku_b": "SKU-007",
+        "product_a": "SKU-003",
+        "product_b": "SKU-007",
+        "support": 0.0467,
+        "confidence": 0.318,
+        "lift": 1.71,
+        "count": 7,
+        "suggested_discount": 7,
+        "price_a": 129.0,
+        "price_b": 98.0,
+        "ideal_bundle_price": 211.11,
+        "cross_ped": -0.213,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-003, 32% also bought SKU-007 in the same order — that's 1.71× more often than if the two were unrelated. Packaging them together at RM 211.11 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.71: customers buying SKU-003 are 1.71× more likely to also buy SKU-007 vs random chance. Cross-PED=-0.213 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-004",
+        "sku_b": "SKU-011",
+        "product_a": "SKU-004",
+        "product_b": "SKU-011",
+        "support": 0.0267,
+        "confidence": 0.333,
+        "lift": 1.61,
+        "count": 4,
+        "suggested_discount": 6,
+        "price_a": 38.0,
+        "price_b": 55.0,
+        "ideal_bundle_price": 87.42,
+        "cross_ped": -0.183,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-004, 33% also bought SKU-011 in the same order — that's 1.61× more often than if the two were unrelated. Packaging them together at RM 87.42 (6% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.61: customers buying SKU-004 are 1.61× more likely to also buy SKU-011 vs random chance. Cross-PED=-0.183 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-005",
+        "sku_b": "SKU-011",
+        "product_a": "SKU-005",
+        "product_b": "SKU-011",
+        "support": 0.0267,
+        "confidence": 0.333,
+        "lift": 1.61,
+        "count": 4,
+        "suggested_discount": 6,
+        "price_a": 215.0,
+        "price_b": 55.0,
+        "ideal_bundle_price": 253.8,
+        "cross_ped": -0.183,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-005, 33% also bought SKU-011 in the same order — that's 1.61× more often than if the two were unrelated. Packaging them together at RM 253.8 (6% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.61: customers buying SKU-005 are 1.61× more likely to also buy SKU-011 vs random chance. Cross-PED=-0.183 (complements — bundle them)."
+      }
+    ],
+    "total_baskets": 0,
+    "total_orders": 150,
+    "mode": "cooccurrence_fallback",
+    "message": "⚠ Low multi-item basket volume — using co-occurrence fallback. Upload data with multiple SKUs per order for full FP-Growth results."
+  },
+  "forecast": {
+    "series": [
+      {
+        "label": "Wk 1",
+        "actual": 25,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 2",
+        "actual": 26,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 3",
+        "actual": 21,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 4",
+        "actual": 23,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 5",
+        "actual": 23,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 6",
+        "actual": 25,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 7",
+        "actual": 26,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 8",
+        "actual": 28,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 9",
+        "actual": 25,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 10",
+        "actual": 29,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 11",
+        "actual": 22,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 12 (F)",
+        "actual": null,
+        "forecast": 23.5,
+        "upper": 25.9,
+        "lower": 21.2
+      },
+      {
+        "label": "Wk 13 (F)",
+        "actual": null,
+        "forecast": 21.3,
+        "upper": 23.4,
+        "lower": 19.2
+      },
+      {
+        "label": "Wk 14 (F)",
+        "actual": null,
+        "forecast": 19.0,
+        "upper": 20.9,
+        "lower": 17.1
+      },
+      {
+        "label": "Wk 15 (F)",
+        "actual": null,
+        "forecast": 20.7,
+        "upper": 22.8,
+        "lower": 18.6
+      }
+    ],
+    "summary": {
+      "model": "SARIMA (1,1,1)(1,1,0)[7]",
+      "horizon": "4 weeks",
+      "avg_weekly": 24.8,
+      "trend": "Downward",
+      "forecast_change": -5.9,
+      "mape": 4.2,
+      "n_obs": 11,
+      "plain_explain": "Demand has been slowing — the model expects sales to drop by about 6% over the next month. This may be a good time to run a promotion or hold off on large restock orders."
+    }
+  },
+  "sales-trend": {
+    "data": [
+      {
+        "week": "Wk 1",
+        "units": 25
+      },
+      {
+        "week": "Wk 2",
+        "units": 26
+      },
+      {
+        "week": "Wk 3",
+        "units": 21
+      },
+      {
+        "week": "Wk 4",
+        "units": 23
+      },
+      {
+        "week": "Wk 5",
+        "units": 23
+      },
+      {
+        "week": "Wk 6",
+        "units": 25
+      },
+      {
+        "week": "Wk 7",
+        "units": 26
+      },
+      {
+        "week": "Wk 8",
+        "units": 28
+      },
+      {
+        "week": "Wk 9",
+        "units": 25
+      },
+      {
+        "week": "Wk 10",
+        "units": 29
+      },
+      {
+        "week": "Wk 11",
+        "units": 22
+      }
+    ]
+  },
+  "top-skus": {
+    "data": [
+      {
+        "name": "SKU-009",
+        "revenue": 11005.0,
+        "sku": "SKU-009"
+      },
+      {
+        "name": "SKU-001",
+        "revenue": 10017.0,
+        "sku": "SKU-001"
+      },
+      {
+        "name": "SKU-005",
+        "revenue": 6665.0,
+        "sku": "SKU-005"
+      },
+      {
+        "name": "SKU-003",
+        "revenue": 2838.0,
+        "sku": "SKU-003"
+      },
+      {
+        "name": "SKU-007",
+        "revenue": 2744.0,
+        "sku": "SKU-007"
+      },
+      {
+        "name": "SKU-004",
+        "revenue": 1178.0,
+        "sku": "SKU-004"
+      }
+    ]
+  },
+  "category-breakdown": {
+    "data": [
+      {
+        "category": "Peripherals",
+        "revenue": 12320.0,
+        "units": 109
+      },
+      {
+        "category": "Electronics",
+        "revenue": 20414.0,
+        "units": 130
+      },
+      {
+        "category": "Accessories",
+        "revenue": 3498.0,
+        "units": 34
+      }
+    ]
+  },
+  "regional": {
+    "data": [
+      {
+        "region": "Kuala Lumpur",
+        "revenue": 13648.0,
+        "orders": 57
+      },
+      {
+        "region": "Selangor",
+        "revenue": 11765.0,
+        "orders": 46
+      },
+      {
+        "region": "Penang",
+        "revenue": 5372.0,
+        "orders": 24
+      },
+      {
+        "region": "Johor Bahru",
+        "revenue": 5447.0,
+        "orders": 23
+      }
+    ]
+  },
+  "sku-list": {
+    "skus": [
+      {
+        "sku": "SKU-001",
+        "product": "SKU-001",
+        "category": "Peripherals"
+      },
+      {
+        "sku": "SKU-005",
+        "product": "SKU-005",
+        "category": "Electronics"
+      },
+      {
+        "sku": "SKU-004",
+        "product": "SKU-004",
+        "category": "Peripherals"
+      },
+      {
+        "sku": "SKU-009",
+        "product": "SKU-009",
+        "category": "Electronics"
+      },
+      {
+        "sku": "SKU-003",
+        "product": "SKU-003",
+        "category": "Accessories"
+      },
+      {
+        "sku": "SKU-007",
+        "product": "SKU-007",
+        "category": "Electronics"
+      },
+      {
+        "sku": "SKU-002",
+        "product": "SKU-002",
+        "category": "Peripherals"
+      },
+      {
+        "sku": "SKU-011",
+        "product": "SKU-011",
+        "category": "Accessories"
+      }
+    ]
+  },
+  "session-summary": {
+    "filename": "data_electronics.csv",
+    "rows": 150,
+    "revenue": 36232.0,
+    "orders": 150,
+    "skus": 8,
+    "categories": 3,
+    "date_range": "2025-01-03 to 2025-03-19"
+  },
+  "simulate_promo_10pct": {
+    "sku": "SKU-001",
+    "product": "SKU-001",
+    "category": "Peripherals",
+    "ped": 1.21,
+    "original_price": 189.0,
+    "discounted_price": 170.1,
+    "discount_pct": 10.0,
+    "original_velocity": 0.697,
+    "projected_velocity": 0.782,
+    "volume_change_pct": 12.1,
+    "current_weekly_revenue": 922.62,
+    "projected_weekly_revenue": 931.13,
+    "current_weekly_profit": 369.05,
+    "projected_weekly_profit": 279.34,
+    "revenue_delta": 8.51,
+    "profit_delta": -89.71,
+    "is_profitable": false,
+    "recommendation": "A 10.0% promo on 'SKU-001' (PED=1.21) will boost volume by ~12.1%. ✗ Not profitable — this item is inelastic (PED=1.21). The margin cut of 10.0% outweighs the modest 12.1% volume gain. Try a smaller discount (e.g. 5%) or bundle strategy instead."
+  }
+}
