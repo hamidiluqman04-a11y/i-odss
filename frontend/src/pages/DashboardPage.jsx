@@ -2,7 +2,7 @@ import HorizontalBarChart from "../charts/HorizontalBarChart";
 import WeeklySalesChart from "../charts/WeeklySalesChart";
 import ChartCard from "../components/ChartCard";
 import ResultPage from "../components/ResultPage";
-import { Tile } from "../components/Tile";
+import { StatusPill, Tile } from "../components/Tile";
 import { useCurrency } from "../hooks/useCurrency";
 import { formatMoneyShort, formatNumber } from "../services/format";
 
@@ -100,15 +100,13 @@ function AtRiskTile({ value }) {
   if (value === null || value === undefined) {
     return <Tile label="Products to restock" value="Unknown" note="Your file has no stock column" />;
   }
-  const color = value > 0 ? "var(--critical)" : "var(--good)";
   return (
     <div className="card tile">
       <div className="tile-label">Products to restock</div>
       <div className="tile-value">{formatNumber(value)}</div>
-      <span className="status-pill" style={{ color: value > 0 ? "var(--critical-ink)" : "var(--good-ink)" }}>
-        <span className="dot" style={{ background: color }} aria-hidden="true" />
-        {value > 0 ? "Below reorder point" : "All above reorder point"}
-      </span>
+      <div style={{ marginTop: "var(--space-sm)" }}>
+        <StatusPill status={value > 0 ? "critical" : "ok"} label={value > 0 ? "Below reorder point" : "All above reorder point"} />
+      </div>
     </div>
   );
 }

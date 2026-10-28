@@ -24,18 +24,18 @@ export default function HorizontalBarChart({ data, formatValue, formatTick }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, bottom: 4, left: 0 }} barCategoryGap={8}>
-        <CartesianGrid stroke={c.grid} horizontal={false} />
+        <CartesianGrid stroke={c["chart-grid"]} horizontal={false} />
         <XAxis
-          type="number" tickFormatter={formatTick} tick={{ fill: c["text-muted"], fontSize: 12 }}
-          axisLine={{ stroke: c.axis }} tickLine={false}
+          type="number" tickFormatter={formatTick} tick={{ fill: c["chart-axis"], fontSize: 12 }}
+          axisLine={{ stroke: c["chart-grid"] }} tickLine={false}
         />
         <YAxis
           type="category" dataKey="label" width={150} tickLine={false} axisLine={false}
-          tick={{ fill: c["text-secondary"], fontSize: 12 }}
+          tick={{ fill: c.body, fontSize: 12 }}
           tickFormatter={(v) => (v.length > 22 ? `${v.slice(0, 21)}…` : v)}
         />
-        <Tooltip content={<BarTooltip formatValue={formatValue} />} cursor={{ fill: c.grid, fillOpacity: 0.4 }} />
-        <Bar dataKey="value" fill={c["series-1"]} radius={[0, 4, 4, 0]} maxBarSize={18} isAnimationActive={false} />
+        <Tooltip content={<BarTooltip formatValue={formatValue} />} cursor={{ fill: c["chart-grid"], fillOpacity: 0.6 }} />
+        <Bar dataKey="value" fill={c["chart-bar"]} radius={[0, 4, 4, 0]} maxBarSize={18} isAnimationActive={false} />
       </BarChart>
     </ResponsiveContainer>
   );

@@ -105,7 +105,7 @@ export default function Layout() {
             <span className="avatar" aria-hidden="true">{(user.name || user.email)[0].toUpperCase()}</span>
             <span>{user.name || user.email}</span>
           </span>
-          <button className="btn btn-small" onClick={handleLogout} disabled={loggingOut}>
+          <button className="btn btn-small btn-secondary" onClick={handleLogout} disabled={loggingOut}>
             {loggingOut ? "Logging out…" : "Log out"}
           </button>
         </header>

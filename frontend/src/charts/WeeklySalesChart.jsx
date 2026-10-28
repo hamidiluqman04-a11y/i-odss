@@ -18,22 +18,17 @@ export default function WeeklySalesChart({ data }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <AreaChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
-        <defs>
-          <linearGradient id="weekly-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={c["series-1"]} stopOpacity={0.18} />
-            <stop offset="100%" stopColor={c["series-1"]} stopOpacity={0.02} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid stroke={c.grid} vertical={false} />
-        <XAxis dataKey="week" tick={{ fill: c["text-muted"], fontSize: 12 }} axisLine={{ stroke: c.axis }} tickLine={false} />
+        <CartesianGrid stroke={c["chart-grid"]} vertical={false} />
+        <XAxis dataKey="week" tick={{ fill: c["chart-axis"], fontSize: 12 }} axisLine={{ stroke: c["chart-grid"] }} tickLine={false} />
         <YAxis
-          tick={{ fill: c["text-muted"], fontSize: 12 }} axisLine={false} tickLine={false} width={44}
+          tick={{ fill: c["chart-axis"], fontSize: 12 }} axisLine={false} tickLine={false} width={44}
           allowDecimals={false}
         />
-        <Tooltip content={<WeekTooltip />} cursor={{ stroke: c.axis, strokeWidth: 1 }} />
+        <Tooltip content={<WeekTooltip />} cursor={{ stroke: c["chart-axis"], strokeWidth: 1 }} />
         <Area
-          type="linear" dataKey="units" stroke={c["series-1"]} strokeWidth={2}
-          fill="url(#weekly-fill)" activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} isAnimationActive={false}
+          type="linear" dataKey="units" stroke={c["chart-actual"]} strokeWidth={2}
+          fill={c["chart-band"]} fillOpacity={1}
+          activeDot={{ r: 5, stroke: c.canvas, strokeWidth: 2, fill: c["chart-actual"] }} isAnimationActive={false}
         />
       </AreaChart>
     </ResponsiveContainer>

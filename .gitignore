@@ -26,6 +26,9 @@ frontend/dist/
 !**/tests/fixtures/*.csv
 !frontend/public/samples/*.csv
 
+# Playwright MCP screenshots and logs
+.playwright-mcp/
+
 # Editors / OS
 .vscode/
 .idea/

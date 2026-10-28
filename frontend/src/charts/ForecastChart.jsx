@@ -44,31 +44,31 @@ export default function ForecastChart({ series }) {
   const data = toChartData(series);
   return (
     <>
-      <div className="row small secondary" style={{ marginBottom: 8, gap: 16 }} aria-hidden="true">
-        <span className="row" style={{ gap: 6 }}>
-          <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke={c["series-1"]} strokeWidth="2" /></svg>
+      <div className="chart-legend" aria-hidden="true">
+        <span>
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke={c["chart-actual"]} strokeWidth="2" /></svg>
           Actual units sold
         </span>
-        <span className="row" style={{ gap: 6 }}>
-          <svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke={c["series-2"]} strokeWidth="2" strokeDasharray="4 3" /></svg>
+        <span>
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke={c["chart-forecast"]} strokeWidth="2" strokeDasharray="6 4" /></svg>
           Forecast
         </span>
-        <span className="row" style={{ gap: 6 }}>
-          <svg width="14" height="10"><rect width="14" height="10" rx="2" fill={c["series-2"]} fillOpacity="0.18" /></svg>
+        <span>
+          <svg width="16" height="12"><rect width="16" height="12" rx="3" fill={c["chart-band"]} /></svg>
           Likely range (90%)
         </span>
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <ComposedChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
-          <CartesianGrid stroke={c.grid} vertical={false} />
-          <XAxis dataKey="label" tick={{ fill: c["text-muted"], fontSize: 12 }} axisLine={{ stroke: c.axis }} tickLine={false} />
-          <YAxis tick={{ fill: c["text-muted"], fontSize: 12 }} axisLine={false} tickLine={false} width={44} domain={[0, "auto"]} />
-          <Tooltip content={<ForecastTooltip />} cursor={{ stroke: c.axis, strokeWidth: 1 }} />
-          <Area dataKey="range" stroke="none" fill={c["series-2"]} fillOpacity={0.18} isAnimationActive={false} connectNulls={false} />
-          <Line dataKey="actual" stroke={c["series-1"]} strokeWidth={2} dot={false}
-            activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} isAnimationActive={false} connectNulls={false} />
-          <Line dataKey="forecast" stroke={c["series-2"]} strokeWidth={2} strokeDasharray="6 4" dot={false}
-            activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} isAnimationActive={false} connectNulls={false} />
+          <CartesianGrid stroke={c["chart-grid"]} vertical={false} />
+          <XAxis dataKey="label" tick={{ fill: c["chart-axis"], fontSize: 12 }} axisLine={{ stroke: c["chart-grid"] }} tickLine={false} />
+          <YAxis tick={{ fill: c["chart-axis"], fontSize: 12 }} axisLine={false} tickLine={false} width={44} domain={[0, "auto"]} />
+          <Tooltip content={<ForecastTooltip />} cursor={{ stroke: c["chart-axis"], strokeWidth: 1 }} />
+          <Area dataKey="range" stroke="none" fill={c["chart-band"]} fillOpacity={1} isAnimationActive={false} connectNulls={false} />
+          <Line dataKey="actual" stroke={c["chart-actual"]} strokeWidth={2} dot={false}
+            activeDot={{ r: 5, stroke: c.canvas, strokeWidth: 2, fill: c["chart-actual"] }} isAnimationActive={false} connectNulls={false} />
+          <Line dataKey="forecast" stroke={c["chart-forecast"]} strokeWidth={2} strokeDasharray="6 4" dot={false}
+            activeDot={{ r: 5, stroke: c.canvas, strokeWidth: 2, fill: c["chart-forecast"] }} isAnimationActive={false} connectNulls={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </>

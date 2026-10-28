@@ -22,8 +22,8 @@ export default function App() {
   if (status === "loading") return <LoadingState message="Connecting to I-ODSS…" />;
   if (status === "error") {
     return (
-      <div className="auth-page">
-        <div className="auth-card">
+      <div className="auth-page centered">
+        <div className="card auth-card">
           <ErrorState error={error} onRetry={retry} />
         </div>
       </div>

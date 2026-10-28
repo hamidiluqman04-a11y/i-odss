@@ -78,7 +78,7 @@ function PairCard({ pair: p, margin }) {
       </div>
       <p className="small">
         {p.break_even_uplift_pct === null ? (
-          <span style={{ color: "var(--critical-ink)" }}>
+          <span style={{ color: "var(--negative-deep)", fontWeight: 600 }}>
             At a {pct(margin)} margin this discount loses money on every bundle.
           </span>
         ) : (

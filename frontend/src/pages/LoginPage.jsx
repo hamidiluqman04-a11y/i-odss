@@ -38,11 +38,22 @@ export default function LoginPage() {
   const isLogin = mode === "login";
   return (
     <div className="auth-page">
+      <section className="auth-hero" aria-labelledby="app-title">
+        <h1 id="app-title">I-ODSS</h1>
+        <p className="lead">
+          Turn your shop's sales export into clear next steps: what will sell, what to bundle, how to price, and when
+          to restock.
+        </p>
+        <ul className="auth-points">
+          <li>Demand forecast</li>
+          <li>Product bundles</li>
+          <li>Pricing insight</li>
+          <li>Restock alerts</li>
+        </ul>
+        <p className="small secondary">Your CSV is analysed in memory and never stored — only summary results are saved.</p>
+      </section>
       <div className="card auth-card stack">
-        <div>
-          <h1>I-ODSS</h1>
-          <p className="secondary">Decision support for e-commerce sellers: forecasts, bundles, pricing and stock.</p>
-        </div>
+        <h2>{isLogin ? "Welcome back" : "Create your account"}</h2>
         <div className="tabs" role="tablist" aria-label="Account">
           <button role="tab" aria-selected={isLogin} onClick={() => switchMode("login")} type="button">
             Log in

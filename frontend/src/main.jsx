@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./hooks/useAuth";
 import { CurrencyProvider } from "./hooks/useCurrency";
+import "@fontsource-variable/inter";
 import "./styles.css";
 
 createRoot(document.getElementById("root")).render(

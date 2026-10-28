@@ -150,6 +150,8 @@ iodss/
 │   ├── src/services/      api.js (the only file that calls the backend), formatting
 │   └── public/samples/    demo CSV files
 ├── legacy/                the original FastAPI prototype, kept for comparison
+├── DESIGN.md              the UI design system (Wise-inspired; all colours, type and spacing come from here)
+├── CLAUDE.md              rules for AI coding assistants (always follow DESIGN.md)
 └── README.md
 ```
 

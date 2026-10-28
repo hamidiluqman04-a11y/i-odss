@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const TOKENS = ["series-1", "series-2", "grid", "axis", "text-muted", "text-secondary", "surface"];
+// Chart roles defined in styles.css, all mapped onto DESIGN.md colours.
+const TOKENS = ["chart-actual", "chart-forecast", "chart-band", "chart-bar", "chart-grid", "chart-axis", "body", "canvas"];
 
 function read() {
   const style = getComputedStyle(document.documentElement);
@@ -9,17 +10,9 @@ function read() {
 
 /**
  * Recharts draws SVG with colour attributes, which cannot use CSS variables
- * directly. This hook reads the colour tokens from styles.css and re-reads
- * them when the computer switches between light and dark mode.
+ * directly, so this hook reads the colour tokens from styles.css once.
  */
 export function useChartColors() {
-  const [colors, setColors] = useState(read);
-  useEffect(() => {
-    const query = window.matchMedia?.("(prefers-color-scheme: dark)");
-    if (!query) return undefined;
-    const update = () => setColors(read());
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
+  const [colors] = useState(read);
   return colors;
 }
