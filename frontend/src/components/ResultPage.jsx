@@ -8,8 +8,9 @@ import { EmptyState, ErrorState, LoadingState } from "./States";
  * Page frame shared by every analysis page: handles "no dataset yet",
  * loading and error states, then renders children(data).
  * While a different dataset loads, the previous result stays visible but faded.
+ * `before` renders between the header and the result (the dashboard's next steps).
  */
-export default function ResultPage({ kind, title, intro, children }) {
+export default function ResultPage({ kind, title, intro, before, children }) {
   const { current, status: listStatus, error: listError, refresh } = useDatasets();
   const { status, data, error, reload } = useResult(kind);
 
@@ -24,23 +25,28 @@ export default function ResultPage({ kind, title, intro, children }) {
     );
   } else if (status === "error") body = <ErrorState error={error} onRetry={reload} />;
   else if (!data) body = <LoadingState message="Loading results…" />;
-  else body = <div className="stack" style={{ opacity: status === "loading" ? 0.5 : 1 }}>{children(data, current)}</div>;
+  else {
+    body = (
+      <div className="stack-lg" aria-busy={status === "loading"} style={{ opacity: status === "loading" ? 0.5 : 1 }}>
+        {children(data, current)}
+      </div>
+    );
+  }
 
   return (
-    <div className="stack">
-      <div className="page-header">
-        <div>
-          <h1>{title}</h1>
-          {current && (
-            <p className="secondary">
-              {current.original_filename} · {formatDate(current.date_start)} – {formatDate(current.date_end)} ·{" "}
-              {formatNumber(current.row_count)} rows
-            </p>
-          )}
-          {intro && <p className="secondary small" style={{ marginTop: 4, maxWidth: 760 }}>{intro}</p>}
-        </div>
-      </div>
+    <>
+      <header className="page-header">
+        {current && (
+          <p className="eyebrow">
+            {current.original_filename} · {formatDate(current.date_start)} – {formatDate(current.date_end)} ·{" "}
+            {formatNumber(current.row_count)} rows
+          </p>
+        )}
+        <h1>{title}</h1>
+        {intro && <p className="page-intro">{intro}</p>}
+      </header>
+      {current && before}
       {body}
-    </div>
+    </>
   );
 }

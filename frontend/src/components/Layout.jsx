@@ -1,51 +1,121 @@
-import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { CURRENCY_SYMBOLS, useCurrency } from "../hooks/useCurrency";
 import { useDatasets } from "../hooks/useDatasets";
 import { formatDate } from "../services/format";
+import Icon from "./Icons";
 
-const icons = {
-  dashboard: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" />
-      <rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" />
-    </svg>
-  ),
-  forecast: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M3 17l5-5 4 3 4-6" /><path d="M16 9l5-3" strokeDasharray="2 2" /><path d="M3 21h18" />
-    </svg>
-  ),
-  bundles: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <rect x="3" y="7" width="8" height="10" rx="1.5" /><rect x="13" y="7" width="8" height="10" rx="1.5" />
-      <path d="M11 12h2" />
-    </svg>
-  ),
-  pricing: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" />
-    </svg>
-  ),
-  inventory: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M21 8l-9-5-9 5 9 5 9-5z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" />
-    </svg>
-  ),
-  upload: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M12 16V4M7 9l5-5 5 5" /><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
-    </svg>
-  ),
-};
+// The five analysis areas. Phones show them as a bottom bar with the short labels.
+const AREAS = [
+  { to: "/", end: true, icon: "dashboard", label: "Overview", short: "Overview" },
+  { to: "/forecast", icon: "forecast", label: "Demand forecast", short: "Forecast" },
+  { to: "/bundles", icon: "bundles", label: "Product bundles", short: "Bundles" },
+  { to: "/pricing", icon: "pricing", label: "Pricing", short: "Pricing" },
+  { to: "/inventory", icon: "inventory", label: "Inventory", short: "Stock" },
+];
 
 export default function Layout() {
-  const { user, logout } = useAuth();
   const { datasets, current, select } = useDatasets();
+  const location = useLocation();
+
+  return (
+    <div className="shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <aside className="sidebar">
+        <Link className="brand" to="/">
+          <strong>I-ODSS</strong>
+          <span>Seller decision support</span>
+        </Link>
+        <nav aria-label="Main">
+          <p className="eyebrow nav-label">Your results</p>
+          <div className="nav">
+            {AREAS.map((a) => (
+              <NavLink key={a.to} to={a.to} end={a.end}><Icon name={a.icon} />{a.label}</NavLink>
+            ))}
+            <NavLink to="/upload"><Icon name="upload" />Upload data</NavLink>
+          </div>
+        </nav>
+        <p className="sidebar-note">
+          <Icon name="lock" />
+          <span>Your CSV is analysed in memory and not stored. Only summary results are saved.</span>
+        </p>
+      </aside>
+
+      <div className="main">
+        <header className="topbar">
+          <Link className="topbar-brand" to="/">I-ODSS</Link>
+          <div className="dataset-switch">
+            <label htmlFor="dataset-picker" className="eyebrow">Viewing dataset</label>
+            <select
+              id="dataset-picker"
+              className="select"
+              value={current?.id ?? ""}
+              onChange={(e) => select(Number(e.target.value))}
+              disabled={datasets.length === 0}
+            >
+              {datasets.length === 0 && <option value="">No data uploaded yet</option>}
+              {datasets.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.original_filename} · {formatDate(d.date_start)} – {formatDate(d.date_end)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <span className="spacer" />
+          {location.pathname !== "/upload" && (
+            <Link className="btn btn-primary btn-small topbar-upload" to="/upload" aria-label="Upload data">
+              <Icon name="upload" />
+              <span className="topbar-upload-label">Upload data</span>
+            </Link>
+          )}
+          <AccountMenu key={location.pathname} />
+        </header>
+
+        <main className="content" id="main-content" tabIndex={-1}>
+          <Outlet />
+        </main>
+
+        <nav className="bottom-nav" aria-label="Main (mobile)">
+          {AREAS.map((a) => (
+            <NavLink key={a.to} to={a.to} end={a.end}>
+              <span className="pill"><Icon name={a.icon} /></span>
+              <span>{a.short}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+/** Name, currency symbol and log out, behind the avatar. Closes on outside click or Escape. */
+function AccountMenu() {
+  const { user, logout } = useAuth();
   const { symbol, setSymbol } = useCurrency();
   const navigate = useNavigate();
+  const ref = useRef(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const name = user.name || user.email;
+
+  useEffect(() => {
+    const close = (e) => {
+      const menu = ref.current;
+      if (!menu?.open) return;
+      if (e.type === "keydown" && e.key === "Escape") {
+        menu.open = false;
+        menu.querySelector("summary")?.focus();
+      } else if (e.type === "pointerdown" && !menu.contains(e.target)) {
+        menu.open = false;
+      }
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, []);
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -58,61 +128,30 @@ export default function Layout() {
   };
 
   return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div className="brand">
-          <strong>I-ODSS</strong>
-          <span className="muted small">Seller decision support</span>
+    <details className="account" ref={ref}>
+      <summary aria-label={`Account: ${name}`}>
+        <span className="avatar" aria-hidden="true">{name[0].toUpperCase()}</span>
+        <span className="account-name">{name}</span>
+        <Icon name="chevron" />
+      </summary>
+      <div className="account-menu">
+        <div className="who">
+          <strong>{user.name || "Your account"}</strong>
+          <span>{user.email}</span>
         </div>
-        <nav className="nav" aria-label="Main">
-          <NavLink to="/" end>{icons.dashboard}Dashboard</NavLink>
-          <NavLink to="/forecast">{icons.forecast}Demand forecast</NavLink>
-          <NavLink to="/bundles">{icons.bundles}Product bundles</NavLink>
-          <NavLink to="/pricing">{icons.pricing}Pricing</NavLink>
-          <NavLink to="/inventory">{icons.inventory}Inventory</NavLink>
-          <NavLink to="/upload">{icons.upload}Upload data</NavLink>
-        </nav>
-        <p className="sidebar-note">Your CSV is analysed in memory and not stored. Only summary results are saved.</p>
-      </aside>
-
-      <div className="main">
-        <header className="topbar">
-          <label htmlFor="dataset-picker">Dataset</label>
-          <select
-            id="dataset-picker"
-            className="select dataset-picker"
-            value={current?.id ?? ""}
-            onChange={(e) => select(Number(e.target.value))}
-            disabled={datasets.length === 0}
-          >
-            {datasets.length === 0 && <option value="">No data uploaded yet</option>}
-            {datasets.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.original_filename} · {formatDate(d.date_start)} – {formatDate(d.date_end)}
-              </option>
-            ))}
-          </select>
-          <span className="spacer" />
-          <label htmlFor="currency-picker" title="Changes the symbol only — amounts are not converted">
-            Currency
-          </label>
+        <div className="field">
+          <label htmlFor="currency-picker">Currency symbol</label>
           <select id="currency-picker" className="select" value={symbol} onChange={(e) => setSymbol(e.target.value)}>
             {CURRENCY_SYMBOLS.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
-          <span className="user-chip">
-            <span className="avatar" aria-hidden="true">{(user.name || user.email)[0].toUpperCase()}</span>
-            <span>{user.name || user.email}</span>
-          </span>
-          <button className="btn btn-small btn-secondary" onClick={handleLogout} disabled={loggingOut}>
-            {loggingOut ? "Logging out…" : "Log out"}
-          </button>
-        </header>
-        <main className="content">
-          <Outlet />
-        </main>
+          <span className="help">Changes the label only. Amounts are never converted.</span>
+        </div>
+        <button className="btn btn-secondary" type="button" onClick={handleLogout} disabled={loggingOut}>
+          {loggingOut ? "Logging out…" : "Log out"}
+        </button>
       </div>
-    </div>
+    </details>
   );
 }

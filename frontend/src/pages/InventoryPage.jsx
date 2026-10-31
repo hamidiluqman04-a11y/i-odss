@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Answer, Method } from "../components/Answer";
 import ResultPage from "../components/ResultPage";
 import { StatusPill, STATUS_LABELS, Tile } from "../components/Tile";
 import { formatNumber } from "../services/format";
@@ -8,7 +9,7 @@ export default function InventoryPage() {
     <ResultPage
       kind="inventory"
       title="Inventory"
-      intro="When to reorder each product. The reorder point is calculated from your daily sales and supplier lead time; stock levels come only from your file."
+      intro="Which products to reorder, and when. Reorder points come from your daily sales; stock levels come only from your file."
     >
       {(data) => <Inventory data={data} />}
     </ResultPage>
@@ -23,8 +24,24 @@ export function Inventory({ data }) {
   const counts = Object.fromEntries(FILTERS.map((f) => [f, f === "all" ? data.items.length : data.items.filter((i) => i.status === f).length]));
   const visible = data.items.filter((i) => filter === "all" || i.status === filter);
 
+  const urgent = counts.critical > 0 ? "critical" : counts.warning > 0 ? "warning" : null;
+
   return (
     <>
+      {data.stock_data_available && (
+        <Answer
+          headline={counts.critical > 0
+            ? `Reorder ${counts.critical === 1 ? "1 product" : `${formatNumber(counts.critical)} products`} now`
+            : counts.warning > 0
+              ? `Order ${counts.warning === 1 ? "1 product" : `${formatNumber(counts.warning)} products`} soon`
+              : "Every product has enough stock for now"}
+        >
+          {urgent
+            ? <>Use the <strong>{STATUS_LABELS[urgent]}</strong> filter below to see the list with a suggested order quantity for each.</>
+            : "All stock levels in your file are above their reorder points. Check again after your next upload."}
+        </Answer>
+      )}
+
       <div className="tiles">
         <Tile label="Products" value={formatNumber(data.items.length)} />
         <Tile label="Reorder now" value={data.stock_data_available ? formatNumber(counts.critical) : "Unknown"}
@@ -61,8 +78,8 @@ export function Inventory({ data }) {
               <tr>
                 <th>Product</th>
                 <th>Status</th>
-                <th className="num">Stock <span className="muted">(your file)</span></th>
-                <th className="num">Reorder point <span className="muted">(calculated)</span></th>
+                <th className="num">Stock <span className="th-note">(your file)</span></th>
+                <th className="num">Reorder point <span className="th-note">(calculated)</span></th>
                 <th className="num">Sold per day</th>
                 <th className="num">Lead time</th>
                 <th className="num">Suggested order</th>
@@ -73,8 +90,8 @@ export function Inventory({ data }) {
             <tbody>
               {visible.map((i) => (
                 <Fragment key={i.sku}>
-                  <tr>
-                    <td>{i.product}<div className="small muted">{i.sku} · {i.category}</div></td>
+                  <tr className={open === i.sku ? "row-open" : undefined}>
+                    <td>{i.product}<span className="cell-sub">{i.sku} · {i.category}</span></td>
                     <td><StatusPill status={i.status} /></td>
                     <td className="num">{i.stock === null ? "Not in file" : formatNumber(i.stock)}</td>
                     <td className="num">{formatNumber(i.rop, 1)}</td>
@@ -92,7 +109,7 @@ export function Inventory({ data }) {
                   {open === i.sku && (
                     <tr className="detail-row">
                       <td colSpan={9}>
-                        <div className="stack" style={{ gap: 8 }}>
+                        <div className="stack" style={{ gap: "var(--space-sm)" }}>
                           <p>{i.plain_explain}</p>
                           <p className="small secondary">
                             Safety stock {formatNumber(i.safety_stock, 1)} units · {formatNumber(i.total_sold)} sold in total ·
@@ -109,11 +126,17 @@ export function Inventory({ data }) {
             </tbody>
           </table>
         </div>
-        <p className="small muted" style={{ marginTop: 10 }}>
-          Reorder point = daily sales × supplier lead time + safety stock. Lead times are typical defaults for each
-          category, not your real supplier times.
-        </p>
+
       </section>
+
+      <Method hint="Reorder point = daily demand × lead time + safety stock">
+        <p className="small secondary">
+          Reorder point = daily sales × supplier lead time + safety stock. Lead times are typical defaults for each
+          category, not your real supplier times. Stock levels and restock status come only from the stock column in
+          your file; I-ODSS never estimates stock on hand. Open <strong>Why?</strong> on a product for its safety stock,
+          ratings and returns.
+        </p>
+      </Method>
     </>
   );
 }

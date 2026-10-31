@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Icon from "../components/Icons";
 import { ErrorMessage } from "../components/States";
 import { useAuth } from "../hooks/useAuth";
 
@@ -40,17 +41,21 @@ export default function LoginPage() {
     <div className="auth-page">
       <section className="auth-hero" aria-labelledby="app-title">
         <h1 id="app-title">I-ODSS</h1>
-        <p className="lead">
-          Turn your shop's sales export into clear next steps: what will sell, what to bundle, how to price, and when
-          to restock.
+        <p className="lead">Your sales export, turned into clear next steps.</p>
+        <p className="sub">
+          Upload the CSV from Shopee, Lazada, TikTok Shop or your own store. I-ODSS shows what will sell, what to
+          bundle, how to price, and when to restock, and explains every number in plain language.
         </p>
-        <ul className="auth-points">
+        <ul className="auth-points" aria-label="What you get">
           <li>Demand forecast</li>
           <li>Product bundles</li>
           <li>Pricing insight</li>
           <li>Restock alerts</li>
         </ul>
-        <p className="small secondary">Your CSV is analysed in memory and never stored — only summary results are saved.</p>
+        <p className="auth-privacy">
+          <Icon name="lock" />
+          <span>Your CSV is analysed in memory and never stored. Only summary results are saved.</span>
+        </p>
       </section>
       <div className="card auth-card stack">
         <h2>{isLogin ? "Welcome back" : "Create your account"}</h2>

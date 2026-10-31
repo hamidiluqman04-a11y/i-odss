@@ -51,7 +51,7 @@ export default function App() {
         <Route
           path="*"
           element={
-            <EmptyState title="Page not found" action={<Link className="btn" to="/">Go to dashboard</Link>}>
+            <EmptyState title="Page not found" action={<Link className="btn btn-primary" to="/">Go to overview</Link>}>
               This page does not exist.
             </EmptyState>
           }

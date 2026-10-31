@@ -144,10 +144,11 @@ describe("UploadPage", () => {
         date_start: "2025-01-01", date_end: "2025-01-10", created_at: "2025-01-11T00:00:00Z" }],
     });
     api.deleteDataset.mockResolvedValue(null);
-    vi.spyOn(window, "confirm").mockReturnValue(true);
     renderWithProviders(<UploadPage />, { datasets: true });
     const user = userEvent.setup();
     await user.click(await screen.findByRole("button", { name: "Delete" }));
+    expect(api.deleteDataset).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Delete dataset", hidden: true }));
     expect(api.deleteDataset).toHaveBeenCalledWith(3);
     await waitFor(() => expect(screen.queryByText("old.csv")).not.toBeInTheDocument());
   });

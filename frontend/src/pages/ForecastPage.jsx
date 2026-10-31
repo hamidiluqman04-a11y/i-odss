@@ -1,4 +1,5 @@
 import ForecastChart from "../charts/ForecastChart";
+import { Answer, Method } from "../components/Answer";
 import ChartCard from "../components/ChartCard";
 import ResultPage from "../components/ResultPage";
 import { Tile } from "../components/Tile";
@@ -36,6 +37,10 @@ export function Forecast({ data }) {
 
   return (
     <>
+      <Answer headline={`Plan for about ${formatNumber(s.forecast_avg_weekly, 0)} units a week`}>
+        {data.plain_explain}
+      </Answer>
+
       <div className="tiles">
         <Tile label="Expected units per week" value={formatNumber(s.forecast_avg_weekly, 0)}
           note={`Next ${data.horizon_weeks} weeks, all products`} />
@@ -43,17 +48,11 @@ export function Forecast({ data }) {
           note={TREND_TEXT[s.trend]} />
         <Tile label="Forecast accuracy (MAPE)" value={ev?.mape != null ? `${formatNumber(ev.mape, 1)}% error` : "Not measurable"}
           note={ev ? `Tested on your last ${ev.holdout_weeks} weeks` : "Needs more history to test"} />
-        <Tile label="Method" value={data.model_type === "sarima" ? "SARIMA" : "Moving average"}
-          note={`${s.n_weeks} full weeks of history`} />
-      </div>
-
-      <div className="explain">
-        <strong>What this means: </strong>{data.plain_explain}
       </div>
 
       <ChartCard
         title="Weekly units: actual and forecast"
-        subtitle={data.model}
+        subtitle="Solid line is what you sold; dashed line and shading are the forecast and its likely range"
         columns={[
           { key: "label", label: "Week" },
           { key: "week_start", label: "Week starting" },
@@ -67,28 +66,32 @@ export function Forecast({ data }) {
         <ForecastChart series={data.series} />
       </ChartCard>
 
-      <div className="grid-2">
-        <section className="card stack">
+      <section className="card stack">
+        <div>
           <h2>Next {forecastRows.length} weeks</h2>
-          <div className="table-wrap">
-            <table>
-              <thead><tr><th>Week starting</th><th className="num">Forecast</th><th className="num">Likely range</th></tr></thead>
-              <tbody>
-                {forecastRows.map((p) => (
-                  <tr key={p.label}>
-                    <td>{p.week_start}</td>
-                    <td className="num">{formatNumber(p.forecast, 0)}</td>
-                    <td className="num">{formatNumber(p.lower, 0)} – {formatNumber(p.upper, 0)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-        <Accuracy evaluation={ev} modelType={data.model_type} />
-      </div>
+          <p className="small secondary">Order enough for the forecast; the likely range shows how far it could swing.</p>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Week starting</th><th className="num">Forecast</th><th className="num">Likely range</th></tr></thead>
+            <tbody>
+              {forecastRows.map((p) => (
+                <tr key={p.label}>
+                  <td>{p.week_start}</td>
+                  <td className="num">{formatNumber(p.forecast, 0)}</td>
+                  <td className="num">{formatNumber(p.lower, 0)} – {formatNumber(p.upper, 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-      <Notes notes={data.notes} />
+      <Method hint={`${data.model_type === "sarima" ? "SARIMA" : "Moving average"} on ${s.n_weeks} full weeks of history · measured accuracy`}>
+        <p className="small secondary"><strong>Model:</strong> {data.model}</p>
+        <Accuracy evaluation={ev} modelType={data.model_type} />
+        <Notes notes={data.notes} />
+      </Method>
     </>
   );
 }
@@ -96,20 +99,20 @@ export function Forecast({ data }) {
 function Accuracy({ evaluation: ev, modelType }) {
   if (!ev) {
     return (
-      <section className="card stack">
-        <h2>How accurate is it?</h2>
-        <p className="secondary">
+      <div className="stack">
+        <h3>How accurate is it?</h3>
+        <p className="secondary small">
           To test accuracy, I-ODSS hides your last 4 weeks, forecasts them from the earlier weeks, and compares.
           Your file does not have enough weeks for a fair test yet, so no accuracy figure is shown.
         </p>
-      </section>
+      </div>
     );
   }
   const weeks = ev.actual.map((a, i) => ({ week: i + 1, actual: a, predicted: ev.predicted[i] }));
   const beatsBaseline = ev.mape != null && ev.baseline_mape != null && ev.mape <= ev.baseline_mape;
   return (
-    <section className="card stack">
-      <h2>How accurate is it?</h2>
+    <div className="stack">
+      <h3>How accurate is it?</h3>
       <p className="secondary small">
         I-ODSS hid your last {ev.holdout_weeks} weeks, forecast them from the weeks before, and compared the result
         with what you really sold.
@@ -138,7 +141,7 @@ function Accuracy({ evaluation: ev, modelType }) {
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 }
 

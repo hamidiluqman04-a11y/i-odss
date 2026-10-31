@@ -1,10 +1,11 @@
 /** A headline number. Use this instead of a chart when the story is one value. */
-export function Tile({ label, value, note }) {
+export function Tile({ label, value, note, children }) {
   return (
     <div className="card tile">
       <div className="tile-label">{label}</div>
       <div className="tile-value">{value}</div>
       {note && <div className="tile-note">{note}</div>}
+      {children}
     </div>
   );
 }

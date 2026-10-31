@@ -21,11 +21,25 @@ page says so and explains what data is needed.
 
 ---
 
-## 1. Quick start (Windows PowerShell)
+## 1. Quick start (Windows)
 
 **You need:** Python 3.13, Node.js 20 or newer, PostgreSQL 14 or newer (tested with 18), Git.
+PostgreSQL's Windows service must be running (it starts with Windows by default).
 
-### First-time setup
+### The easy way: two double-clicks
+
+1. **Once:** double-click **`setup.bat`** in the project folder. It installs everything,
+   writes `backend\.env` with random secrets, creates the database and the demo account.
+   The only thing it may ask for is the password of your PostgreSQL **postgres** admin
+   account (the one you chose when installing PostgreSQL). Running it again is safe.
+2. **Every time:** double-click **`start.bat`**. It checks PostgreSQL, starts the backend,
+   waits until it is ready, starts the frontend and opens your browser. Log in with
+   `DEMO_USER_EMAIL` / `DEMO_USER_PASSWORD` from `backend\.env` (setup also prints them).
+
+To stop I-ODSS, close the two windows titled **I-ODSS backend** and **I-ODSS frontend**.
+If port 5173 is busy, the browser simply opens on the next free port (5174, 5175, …).
+
+### The manual way (what the scripts do)
 
 From the project folder:
 
@@ -69,7 +83,7 @@ Install the frontend once, from the `frontend` folder:
 npm install
 ```
 
-### Every time you work on it — two terminals
+#### Every time — two terminals
 
 Terminal 1, in `backend`:
 
@@ -150,6 +164,8 @@ iodss/
 │   ├── src/services/      api.js (the only file that calls the backend), formatting
 │   └── public/samples/    demo CSV files
 ├── legacy/                the original FastAPI prototype, kept for comparison
+├── setup.bat / setup.ps1  one-time setup (double-click)
+├── start.bat / start.ps1  start backend + frontend and open the browser (double-click)
 ├── DESIGN.md              the UI design system (Wise-inspired; all colours, type and spacing come from here)
 ├── CLAUDE.md              rules for AI coding assistants (always follow DESIGN.md)
 └── README.md

@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ConfirmDialog } from "../components/Answer";
+import Icon from "../components/Icons";
 import { ErrorMessage } from "../components/States";
 import { useDatasets } from "../hooks/useDatasets";
 import { api, ApiError } from "../services/api";
@@ -39,6 +41,7 @@ export default function UploadPage() {
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
 
   const choose = (chosen) => {
@@ -70,8 +73,9 @@ export default function UploadPage() {
     }
   };
 
-  const handleDelete = async (dataset) => {
-    if (!window.confirm(`Delete the results for "${dataset.original_filename}"? This cannot be undone.`)) return;
+  const confirmDelete = async () => {
+    const dataset = pendingDelete;
+    if (!dataset) return;
     setDeleting(dataset.id);
     setDeleteError(null);
     try {
@@ -81,6 +85,7 @@ export default function UploadPage() {
       setDeleteError(err);
     } finally {
       setDeleting(null);
+      setPendingDelete(null);
     }
   };
 
@@ -89,95 +94,124 @@ export default function UploadPage() {
     navigate("/");
   };
 
+  const marginOk = Number(marginPct) > 0 && Number(marginPct) < 100;
+
   return (
-    <div className="stack">
-      <div className="page-header">
-        <div>
-          <h1>Upload sales data</h1>
-          <p className="secondary">
-            Export your orders from Shopee, Lazada, TikTok Shop or any shop as a CSV file. I-ODSS checks every row,
-            then runs all analyses at once.
-          </p>
-        </div>
-      </div>
+    <>
+      <header className="page-header">
+        <h1>Upload sales data</h1>
+        <p className="page-intro">
+          Export your orders from Shopee, Lazada, TikTok Shop or any shop as a CSV file. I-ODSS checks every row,
+          then runs every analysis at once.
+        </p>
+      </header>
 
       <div className="upload-grid">
-        <form className="card stack" onSubmit={submit} noValidate>
-          <div
-            className={`dropzone${dragging ? " dragging" : ""}`}
-            role="button"
-            tabIndex={0}
-            aria-label="Choose a CSV file"
-            onClick={() => inputRef.current?.click()}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), inputRef.current?.click())}
-            onDragOver={(e) => (e.preventDefault(), setDragging(true))}
-            onDragLeave={() => setDragging(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragging(false);
-              choose(e.dataTransfer.files[0]);
-            }}
-          >
-            <p><strong>{file ? file.name : "Drop your CSV file here, or click to choose"}</strong></p>
-            <p className="muted small">
-              {file ? `${formatNumber(file.size / 1024, 1)} KB` : `CSV only, up to ${MAX_UPLOAD_MB} MB`}
-            </p>
-          </div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept=".csv,text/csv"
-            className="visually-hidden"
-            data-testid="file-input"
-            onChange={(e) => choose(e.target.files[0])}
-          />
+        <form className="card stack-lg" onSubmit={submit} noValidate aria-label="Upload a sales file">
+          <ol className="steps">
+            <li className={`step${file ? " done" : ""}`}>
+              <span className="step-num" aria-hidden="true">1</span>
+              <div className="step-body">
+                <h2 className="step-title">Choose your CSV file</h2>
+                <div
+                  className={`dropzone${dragging ? " dragging" : ""}${file ? " has-file" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={file ? `Selected file: ${file.name}. Choose a different file` : "Choose a CSV file"}
+                  onClick={() => inputRef.current?.click()}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), inputRef.current?.click())}
+                  onDragOver={(e) => (e.preventDefault(), setDragging(true))}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragging(false);
+                    choose(e.dataTransfer.files[0]);
+                  }}
+                >
+                  <Icon name={file ? "file" : "upload"} />
+                  <p className="dropzone-name"><strong>{file ? file.name : "Drop your CSV file here, or click to choose"}</strong></p>
+                  <p className="secondary small">
+                    {file ? `${formatNumber(file.size / 1024, 1)} KB · click to choose a different file` : `CSV only, up to ${MAX_UPLOAD_MB} MB`}
+                  </p>
+                </div>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="visually-hidden"
+                  data-testid="file-input"
+                  tabIndex={-1}
+                  onChange={(e) => choose(e.target.files[0])}
+                />
+              </div>
+            </li>
 
-          <div className="field">
-            <label htmlFor="margin">Your typical gross margin (%)</label>
-            <input
-              id="margin" className="input" type="number" min="1" max="99" step="1"
-              value={marginPct} onChange={(e) => setMarginPct(e.target.value)} style={{ maxWidth: 140 }}
-            />
-            <span className="help">
-              Used to estimate profit for price tests, promotions and bundles. If you are unsure, 40% is a common
-              starting point — it is an assumption, not a measured value.
+            <li className={`step${marginOk ? " done" : ""}`}>
+              <span className="step-num" aria-hidden="true">2</span>
+              <div className="step-body">
+                <h2 className="step-title">Set your margin</h2>
+                <div className="field">
+                  <label htmlFor="margin">Your typical gross margin (%)</label>
+                  <input
+                    id="margin" className="input input-short" type="number" min="1" max="99" step="1" inputMode="numeric"
+                    value={marginPct} onChange={(e) => setMarginPct(e.target.value)} aria-describedby="margin-help"
+                  />
+                  <span className="help" id="margin-help">
+                    Used to estimate profit for price tests, promotions and bundles. If you are unsure, 40% is a common
+                    starting point — it is an assumption, not a measured value.
+                  </span>
+                </div>
+              </div>
+            </li>
+
+            <li className="step">
+              <span className="step-num" aria-hidden="true">3</span>
+              <div className="step-body">
+                <h2 className="step-title">Analyse</h2>
+                <ErrorMessage error={error} title={errorTitle(error)} />
+                {error?.extra?.detected_headers && (
+                  <p className="small secondary">Columns found in your file: {error.extra.detected_headers.join(", ")}</p>
+                )}
+                <div className="row">
+                  <button className="btn btn-primary" type="submit" disabled={busy || !file}>
+                    {busy ? "Checking and analysing…" : "Upload and analyse"}
+                  </button>
+                  <span className="small secondary" aria-live="polite">
+                    {busy ? "This usually takes a few seconds." : file ? "" : "Choose a file first."}
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ol>
+          <p className="small secondary privacy-note">
+            <Icon name="lock" />
+            <span>
+              The file is analysed in memory and then discarded. Only summary results (totals per product, week,
+              category and region) are saved to your account.
             </span>
-          </div>
-
-          <ErrorMessage error={error} title={errorTitle(error)} />
-          {error?.extra?.detected_headers && (
-            <p className="small secondary">Columns found in your file: {error.extra.detected_headers.join(", ")}</p>
-          )}
-
-          <div className="row">
-            <button className="btn btn-primary" type="submit" disabled={busy || !file}>
-              {busy ? "Checking and analysing…" : "Upload and analyse"}
-            </button>
-            {busy && <span className="muted small">This usually takes a few seconds.</span>}
-          </div>
-          <p className="small muted">
-            Privacy: the file is analysed in memory and then discarded. Only summary results (totals per product,
-            week, category and region) are saved to your account.
           </p>
         </form>
 
-        <div className="card stack">
+        <aside className="card stack">
           <h2>What the file needs</h2>
-          <ul className="secondary small" style={{ margin: 0, paddingLeft: 18 }}>
+          <ul className="req-list small secondary">
             <li><strong>Required:</strong> date, SKU or product name, quantity, unit price.</li>
             <li><strong>Recommended:</strong> order ID (needed for bundles), product name, category.</li>
             <li><strong>Optional:</strong> region, rating, returns, stock on hand (enables restock alerts).</li>
           </ul>
-          <h2>Demo data</h2>
-          <p className="small secondary">Made-up sample files for trying I-ODSS. They are not real sales.</p>
-          <ul className="small" style={{ margin: 0, paddingLeft: 18 }}>
+          <h2>Try it with demo data</h2>
+          <span className="demo-tag">Demo data — made up, not real sales</span>
+          <ul className="sample-list">
             {SAMPLE_FILES.map((s) => (
               <li key={s.file}>
-                <a href={`/samples/${s.file}`} download>{s.file}</a> <span className="muted">— {s.note}</span>
+                <a href={`/samples/${s.file}`} download>
+                  {s.file}
+                  <span>{s.note}</span>
+                </a>
               </li>
             ))}
           </ul>
-        </div>
+        </aside>
       </div>
 
       {result && <UploadSummary result={result} onOpen={() => open(result.dataset.id)} />}
@@ -188,7 +222,7 @@ export default function UploadPage() {
         </div>
         <ErrorMessage error={deleteError} title="Could not delete" />
         {datasets.length === 0 ? (
-          <p className="secondary">Nothing uploaded yet.</p>
+          <p className="secondary">Nothing uploaded yet. Your uploads will be listed here.</p>
         ) : (
           <div className="table-wrap">
             <table>
@@ -202,14 +236,15 @@ export default function UploadPage() {
                 {datasets.map((d) => (
                   <tr key={d.id}>
                     <td>{d.original_filename}</td>
-                    <td>{formatDate(d.date_start)} – {formatDate(d.date_end)}</td>
+                    <td className="nowrap">{formatDate(d.date_start)} – {formatDate(d.date_end)}</td>
                     <td className="num">{formatNumber(d.row_count)}</td>
                     <td className="num">{formatNumber(d.sku_count)}</td>
-                    <td>{formatDateTime(d.created_at)}</td>
+                    <td className="nowrap">{formatDateTime(d.created_at)}</td>
                     <td>
                       <div className="row" style={{ justifyContent: "flex-end", flexWrap: "nowrap" }}>
-                        <button className="btn btn-small" onClick={() => open(d.id)}>Open</button>
-                        <button className="btn btn-small btn-danger" onClick={() => handleDelete(d)} disabled={deleting === d.id}>
+                        <button className="btn btn-small" type="button" onClick={() => open(d.id)}>Open</button>
+                        <button className="btn btn-small btn-danger" type="button" onClick={() => setPendingDelete(d)}
+                          disabled={deleting === d.id}>
                           {deleting === d.id ? "Deleting…" : "Delete"}
                         </button>
                       </div>
@@ -221,7 +256,20 @@ export default function UploadPage() {
           </div>
         )}
       </section>
-    </div>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete this dataset?"
+        confirmLabel="Delete dataset"
+        busyLabel="Deleting…"
+        busy={deleting !== null}
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      >
+        The saved results for <strong>{pendingDelete?.original_filename}</strong> will be removed from your account.
+        This cannot be undone.
+      </ConfirmDialog>
+    </>
   );
 }
 
@@ -235,7 +283,7 @@ function errorTitle(error) {
 function UploadSummary({ result, onOpen }) {
   const d = result.dataset;
   return (
-    <section className="card stack" aria-live="polite">
+    <section className="card stack" aria-live="polite" aria-label="Upload result">
       <div className="alert alert-success">
         <strong>Upload complete.</strong> {formatNumber(d.row_count)} rows from {d.original_filename} were analysed
         ({formatNumber(d.sku_count)} products, {formatDate(d.date_start)} – {formatDate(d.date_end)}).
@@ -252,9 +300,13 @@ function UploadSummary({ result, onOpen }) {
           )}
         </div>
       )}
-      <div>
-        <h2>How your columns were read</h2>
-        <div className="table-wrap">
+      <div className="row">
+        <button className="btn btn-primary" type="button" onClick={onOpen}>Open dashboard</button>
+        <span className="small secondary">Every results page now shows this file.</span>
+      </div>
+      <details className="tech">
+        <summary>How your columns were read</summary>
+        <div className="table-wrap" style={{ marginTop: "var(--space-sm)" }}>
           <table>
             <thead><tr><th>I-ODSS field</th><th>Column in your file</th></tr></thead>
             <tbody>
@@ -264,8 +316,7 @@ function UploadSummary({ result, onOpen }) {
             </tbody>
           </table>
         </div>
-      </div>
-      <div><button className="btn btn-primary" onClick={onOpen}>Open dashboard</button></div>
+      </details>
     </section>
   );
 }

@@ -5,6 +5,7 @@ import App from "./App";
 import { AuthProvider } from "./hooks/useAuth";
 import { CurrencyProvider } from "./hooks/useCurrency";
 import "@fontsource-variable/inter";
+import "@fontsource-variable/manrope";
 import "./styles.css";
 
 createRoot(document.getElementById("root")).render(

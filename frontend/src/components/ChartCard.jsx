@@ -46,7 +46,7 @@ export default function ChartCard({ title, subtitle, note, columns, rows, childr
           </table>
         </div>
       )}
-      {note && <p className="small muted" style={{ marginTop: 10 }}>{note}</p>}
+      {note && <p className="small secondary card-note">{note}</p>}
     </section>
   );
 }
