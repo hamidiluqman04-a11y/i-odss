@@ -1,0 +1,758 @@
+{
+  "upload": {
+    "success": true,
+    "rows": 100,
+    "filename": "data_beauty.csv",
+    "skus": 8,
+    "date_range": "2025-01-01 to 2025-02-20",
+    "col_map": {
+      "order_id": "OrderID",
+      "sku": "SKU",
+      "date": "Date",
+      "qty": "Quantity",
+      "price": "UnitPrice",
+      "category": "Category",
+      "region": "Region",
+      "rating": "Rating",
+      "returns": "Returns"
+    },
+    "warnings": [],
+    "warning_count": 0
+  },
+  "metrics": {
+    "revenue": 13493.0,
+    "orders": 100,
+    "units": 197,
+    "aov": 134.93,
+    "skus_count": 8,
+    "at_risk": 8,
+    "days_of_data": 51,
+    "filename": "data_beauty.csv",
+    "rows": 100
+  },
+  "inventory": {
+    "items": [
+      {
+        "sku": "SKU-B01",
+        "product": "SKU-B01",
+        "category": "Skincare",
+        "stock": 2,
+        "rop": 4.5,
+        "lead": 6,
+        "velocity": 0.608,
+        "safety_stock": 0.9,
+        "status": "critical",
+        "revenue": 2728.0,
+        "total_sold": 31,
+        "reorder_qty": 5,
+        "avg_rating": 4.8,
+        "return_rate": 3.2,
+        "days_until_stockout": 3.3,
+        "plain_explain": "This item sells at a velocity of 0.6 unit/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 3 days if you do not reorder now.",
+        "xai": "ROP=4.5: daily demand 0.61 u/day × lead 6 days + safety stock 0.9 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B02",
+        "product": "SKU-B02",
+        "category": "Skincare",
+        "stock": 2,
+        "rop": 2.3,
+        "lead": 6,
+        "velocity": 0.314,
+        "safety_stock": 0.4,
+        "status": "critical",
+        "revenue": 1920.0,
+        "total_sold": 16,
+        "reorder_qty": 2,
+        "avg_rating": 4.7,
+        "return_rate": 0.0,
+        "days_until_stockout": 6.4,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=2.3: daily demand 0.31 u/day × lead 6 days + safety stock 0.4 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B03",
+        "product": "SKU-B03",
+        "category": "Skincare",
+        "stock": 4,
+        "rop": 7.3,
+        "lead": 6,
+        "velocity": 0.98,
+        "safety_stock": 1.4,
+        "status": "critical",
+        "revenue": 3250.0,
+        "total_sold": 50,
+        "reorder_qty": 8,
+        "avg_rating": 4.9,
+        "return_rate": 0.0,
+        "days_until_stockout": 4.1,
+        "plain_explain": "This item sells at a velocity of 1.0 unit/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 4 days if you do not reorder now.",
+        "xai": "ROP=7.3: daily demand 0.98 u/day × lead 6 days + safety stock 1.4 units. Simulated stock=4 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B04",
+        "product": "SKU-B04",
+        "category": "Skincare",
+        "stock": 2,
+        "rop": 4.1,
+        "lead": 6,
+        "velocity": 0.549,
+        "safety_stock": 0.8,
+        "status": "critical",
+        "revenue": 1260.0,
+        "total_sold": 28,
+        "reorder_qty": 5,
+        "avg_rating": 4.5,
+        "return_rate": 0.0,
+        "days_until_stockout": 3.6,
+        "plain_explain": "This item sells at a velocity of 0.5 unit/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 4 days if you do not reorder now.",
+        "xai": "ROP=4.1: daily demand 0.55 u/day × lead 6 days + safety stock 0.8 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B06",
+        "product": "SKU-B06",
+        "category": "Haircare",
+        "stock": 2,
+        "rop": 2.4,
+        "lead": 6,
+        "velocity": 0.333,
+        "safety_stock": 0.4,
+        "status": "critical",
+        "revenue": 646.0,
+        "total_sold": 17,
+        "reorder_qty": 2,
+        "avg_rating": 4.4,
+        "return_rate": 0.0,
+        "days_until_stockout": 6.0,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=2.4: daily demand 0.33 u/day × lead 6 days + safety stock 0.4 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B07",
+        "product": "SKU-B07",
+        "category": "Haircare",
+        "stock": 2,
+        "rop": 2.3,
+        "lead": 6,
+        "velocity": 0.314,
+        "safety_stock": 0.4,
+        "status": "critical",
+        "revenue": 1200.0,
+        "total_sold": 16,
+        "reorder_qty": 2,
+        "avg_rating": 4.6,
+        "return_rate": 0.0,
+        "days_until_stockout": 6.4,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 6 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=2.3: daily demand 0.31 u/day × lead 6 days + safety stock 0.4 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B08",
+        "product": "SKU-B08",
+        "category": "Makeup",
+        "stock": 2,
+        "rop": 3.4,
+        "lead": 5,
+        "velocity": 0.549,
+        "safety_stock": 0.7,
+        "status": "critical",
+        "revenue": 784.0,
+        "total_sold": 28,
+        "reorder_qty": 3,
+        "avg_rating": 4.3,
+        "return_rate": 0.0,
+        "days_until_stockout": 3.6,
+        "plain_explain": "This item sells at a velocity of 0.5 unit/day. Because your supplier takes 5 days to ship new inventory, you will run out of stock in about 4 days if you do not reorder now.",
+        "xai": "ROP=3.4: daily demand 0.55 u/day × lead 5 days + safety stock 0.7 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-B05",
+        "product": "SKU-B05",
+        "category": "Skincare",
+        "stock": 2,
+        "rop": 1.6,
+        "lead": 6,
+        "velocity": 0.216,
+        "safety_stock": 0.3,
+        "status": "warning",
+        "revenue": 1705.0,
+        "total_sold": 11,
+        "reorder_qty": 1,
+        "avg_rating": 4.7,
+        "return_rate": 9.1,
+        "days_until_stockout": 9.3,
+        "plain_explain": "At your current pace of 0.2 units/day, this item will reach its safety threshold in roughly 9 days — comfortably before your 6-day supplier lead time runs out, but it's worth keeping an eye on.",
+        "xai": "ROP=1.6: daily demand 0.22 u/day × lead 6 days + safety stock 0.3 units. Simulated stock=2 → near ROP — monitor."
+      }
+    ],
+    "critical_count": 7
+  },
+  "pricing": {
+    "items": [
+      {
+        "sku": "SKU-B03",
+        "product": "SKU-B03",
+        "category": "Skincare",
+        "avg_price": 65.0,
+        "ped": 0.71,
+        "action": "increase",
+        "pct": 4.1,
+        "new_price": 67.66,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 3250.0,
+        "weekly_delta": 4.74,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-B03' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.71) tells us. Raising the price by 4.1% should add roughly RM +4.74 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.71 for 'Skincare' (base=0.75, velocity modifier=0.94). Inelastic — raise price safely. Est. weekly revenue: RM 446.08 → RM 450.82 (Δ RM +4.74)."
+      },
+      {
+        "sku": "SKU-B01",
+        "product": "SKU-B01",
+        "category": "Skincare",
+        "avg_price": 88.0,
+        "ped": 0.74,
+        "action": "increase",
+        "pct": 3.6,
+        "new_price": 91.17,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 2728.0,
+        "weekly_delta": 3.16,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-B01' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.74) tells us. Raising the price by 3.6% should add roughly RM +3.16 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.74 for 'Skincare' (base=0.75, velocity modifier=0.98). Inelastic — raise price safely. Est. weekly revenue: RM 374.43 → RM 377.59 (Δ RM +3.16)."
+      },
+      {
+        "sku": "SKU-B02",
+        "product": "SKU-B02",
+        "category": "Skincare",
+        "avg_price": 120.0,
+        "ped": 0.77,
+        "action": "increase",
+        "pct": 3.2,
+        "new_price": 123.84,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 1920.0,
+        "weekly_delta": 1.73,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-B02' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.77) tells us. Raising the price by 3.2% should add roughly RM +1.73 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.77 for 'Skincare' (base=0.75, velocity modifier=1.02). Inelastic — raise price safely. Est. weekly revenue: RM 263.53 → RM 265.26 (Δ RM +1.73)."
+      },
+      {
+        "sku": "SKU-B05",
+        "product": "SKU-B05",
+        "category": "Skincare",
+        "avg_price": 155.0,
+        "ped": 0.77,
+        "action": "increase",
+        "pct": 3.2,
+        "new_price": 159.96,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 1705.0,
+        "weekly_delta": 1.54,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-B05' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.77) tells us. Raising the price by 3.2% should add roughly RM +1.54 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.77 for 'Skincare' (base=0.75, velocity modifier=1.03). Inelastic — raise price safely. Est. weekly revenue: RM 234.02 → RM 235.56 (Δ RM +1.54)."
+      },
+      {
+        "sku": "SKU-B04",
+        "product": "SKU-B04",
+        "category": "Skincare",
+        "avg_price": 45.0,
+        "ped": 0.74,
+        "action": "increase",
+        "pct": 3.6,
+        "new_price": 46.62,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 1260.0,
+        "weekly_delta": 1.45,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-B04' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.74) tells us. Raising the price by 3.6% should add roughly RM +1.45 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.74 for 'Skincare' (base=0.75, velocity modifier=0.99). Inelastic — raise price safely. Est. weekly revenue: RM 172.94 → RM 174.39 (Δ RM +1.45)."
+      },
+      {
+        "sku": "SKU-B08",
+        "product": "SKU-B08",
+        "category": "Makeup",
+        "avg_price": 28.0,
+        "ped": 1.34,
+        "action": "decrease",
+        "pct": 3.4,
+        "new_price": 27.05,
+        "reason": "Highly elastic — lower price boosts volume",
+        "revenue": 784.0,
+        "weekly_delta": 1.08,
+        "is_profitable": true,
+        "plain_explain": "'SKU-B08' is price-sensitive (PED=1.34) — a small discount tends to bring in a lot more buyers. Cutting the price by 3.4% is projected to grow weekly revenue by about RM +1.08, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.34 for 'Makeup' (base=1.35, velocity modifier=0.99). Highly elastic — lower price boosts volume. Est. weekly revenue: RM 107.61 → RM 108.69 (Δ RM +1.08)."
+      },
+      {
+        "sku": "SKU-B07",
+        "product": "SKU-B07",
+        "category": "Haircare",
+        "avg_price": 75.0,
+        "ped": 1.12,
+        "action": "decrease",
+        "pct": 0.7,
+        "new_price": 74.47,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 1200.0,
+        "weekly_delta": 0.11,
+        "is_profitable": true,
+        "plain_explain": "'SKU-B07' is price-sensitive (PED=1.12) — a small discount tends to bring in a lot more buyers. Cutting the price by 0.7% is projected to grow weekly revenue by about RM +0.11, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.12 for 'Haircare' (base=1.1, velocity modifier=1.02). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 164.71 → RM 164.82 (Δ RM +0.11)."
+      },
+      {
+        "sku": "SKU-B06",
+        "product": "SKU-B06",
+        "category": "Haircare",
+        "avg_price": 38.0,
+        "ped": 1.12,
+        "action": "decrease",
+        "pct": 0.7,
+        "new_price": 37.73,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 646.0,
+        "weekly_delta": 0.06,
+        "is_profitable": true,
+        "plain_explain": "'SKU-B06' is price-sensitive (PED=1.12) — a small discount tends to bring in a lot more buyers. Cutting the price by 0.7% is projected to grow weekly revenue by about RM +0.06, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.12 for 'Haircare' (base=1.1, velocity modifier=1.02). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 88.67 → RM 88.73 (Δ RM +0.06)."
+      }
+    ]
+  },
+  "bundles": {
+    "pairs": [
+      {
+        "sku_a": "SKU-B02",
+        "sku_b": "SKU-B07",
+        "product_a": "SKU-B02",
+        "product_b": "SKU-B07",
+        "support": 0.05,
+        "confidence": 0.312,
+        "lift": 1.95,
+        "count": 5,
+        "suggested_discount": 8,
+        "price_a": 120.0,
+        "price_b": 75.0,
+        "ideal_bundle_price": 179.4,
+        "cross_ped": -0.285,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B02, 31% also bought SKU-B07 in the same order — that's 1.95× more often than if the two were unrelated. Packaging them together at RM 179.4 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.95: customers buying SKU-B02 are 1.95× more likely to also buy SKU-B07 vs random chance. Cross-PED=-0.285 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B02",
+        "sku_b": "SKU-B06",
+        "product_a": "SKU-B02",
+        "product_b": "SKU-B06",
+        "support": 0.05,
+        "confidence": 0.312,
+        "lift": 1.84,
+        "count": 5,
+        "suggested_discount": 7,
+        "price_a": 120.0,
+        "price_b": 38.0,
+        "ideal_bundle_price": 146.94,
+        "cross_ped": -0.252,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B02, 31% also bought SKU-B06 in the same order — that's 1.84× more often than if the two were unrelated. Packaging them together at RM 146.94 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.84: customers buying SKU-B02 are 1.84× more likely to also buy SKU-B06 vs random chance. Cross-PED=-0.252 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B06",
+        "sku_b": "SKU-B07",
+        "product_a": "SKU-B06",
+        "product_b": "SKU-B07",
+        "support": 0.05,
+        "confidence": 0.312,
+        "lift": 1.84,
+        "count": 5,
+        "suggested_discount": 7,
+        "price_a": 38.0,
+        "price_b": 75.0,
+        "ideal_bundle_price": 105.09,
+        "cross_ped": -0.252,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B06, 31% also bought SKU-B07 in the same order — that's 1.84× more often than if the two were unrelated. Packaging them together at RM 105.09 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.84: customers buying SKU-B06 are 1.84× more likely to also buy SKU-B07 vs random chance. Cross-PED=-0.252 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B02",
+        "sku_b": "SKU-B05",
+        "product_a": "SKU-B02",
+        "product_b": "SKU-B05",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 1.7,
+        "count": 3,
+        "suggested_discount": 7,
+        "price_a": 120.0,
+        "price_b": 155.0,
+        "ideal_bundle_price": 255.75,
+        "cross_ped": -0.21,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B02, 27% also bought SKU-B05 in the same order — that's 1.7× more often than if the two were unrelated. Packaging them together at RM 255.75 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.7: customers buying SKU-B02 are 1.7× more likely to also buy SKU-B05 vs random chance. Cross-PED=-0.21 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B05",
+        "sku_b": "SKU-B07",
+        "product_a": "SKU-B05",
+        "product_b": "SKU-B07",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 1.7,
+        "count": 3,
+        "suggested_discount": 7,
+        "price_a": 155.0,
+        "price_b": 75.0,
+        "ideal_bundle_price": 213.9,
+        "cross_ped": -0.21,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B05, 27% also bought SKU-B07 in the same order — that's 1.7× more often than if the two were unrelated. Packaging them together at RM 213.9 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.7: customers buying SKU-B05 are 1.7× more likely to also buy SKU-B07 vs random chance. Cross-PED=-0.21 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B05",
+        "sku_b": "SKU-B06",
+        "product_a": "SKU-B05",
+        "product_b": "SKU-B06",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 1.6,
+        "count": 3,
+        "suggested_discount": 6,
+        "price_a": 155.0,
+        "price_b": 38.0,
+        "ideal_bundle_price": 181.42,
+        "cross_ped": -0.18,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-B05, 27% also bought SKU-B06 in the same order — that's 1.6× more often than if the two were unrelated. Packaging them together at RM 181.42 (6% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.6: customers buying SKU-B05 are 1.6× more likely to also buy SKU-B06 vs random chance. Cross-PED=-0.18 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B04",
+        "sku_b": "SKU-B08",
+        "product_a": "SKU-B04",
+        "product_b": "SKU-B08",
+        "support": 0.09,
+        "confidence": 0.321,
+        "lift": 1.15,
+        "count": 9,
+        "suggested_discount": 5,
+        "price_a": 45.0,
+        "price_b": 28.0,
+        "ideal_bundle_price": 69.35,
+        "cross_ped": -0.045,
+        "is_profitable": false,
+        "plain_explain": "Out of everyone who bought SKU-B04, 32% also bought SKU-B08 in the same order — that's 1.15× more often than if the two were unrelated. Packaging them together at RM 69.35 (5% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.15: customers buying SKU-B04 are 1.15× more likely to also buy SKU-B08 vs random chance. Cross-PED=-0.045 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-B02",
+        "sku_b": "SKU-B04",
+        "product_a": "SKU-B02",
+        "product_b": "SKU-B04",
+        "support": 0.05,
+        "confidence": 0.312,
+        "lift": 1.12,
+        "count": 5,
+        "suggested_discount": 4,
+        "price_a": 120.0,
+        "price_b": 45.0,
+        "ideal_bundle_price": 158.4,
+        "cross_ped": -0.036,
+        "is_profitable": false,
+        "plain_explain": "Out of everyone who bought SKU-B02, 31% also bought SKU-B04 in the same order — that's 1.12× more often than if the two were unrelated. Packaging them together at RM 158.4 (4% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.12: customers buying SKU-B02 are 1.12× more likely to also buy SKU-B04 vs random chance. Cross-PED=-0.036 (complements — bundle them)."
+      }
+    ],
+    "total_baskets": 0,
+    "total_orders": 100,
+    "mode": "cooccurrence_fallback",
+    "message": "⚠ Low multi-item basket volume — using co-occurrence fallback. Upload data with multiple SKUs per order for full FP-Growth results."
+  },
+  "forecast": {
+    "series": [
+      {
+        "label": "Wk 1",
+        "actual": 24,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 2",
+        "actual": 27,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 3",
+        "actual": 29,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 4",
+        "actual": 27,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 5",
+        "actual": 24,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 6",
+        "actual": 28,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 7",
+        "actual": 29,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 8",
+        "actual": 9,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 9 (F)",
+        "actual": null,
+        "forecast": 9.7,
+        "upper": 10.7,
+        "lower": 8.7
+      },
+      {
+        "label": "Wk 10 (F)",
+        "actual": null,
+        "forecast": 5.9,
+        "upper": 6.5,
+        "lower": 5.3
+      },
+      {
+        "label": "Wk 11 (F)",
+        "actual": null,
+        "forecast": 2.0,
+        "upper": 2.2,
+        "lower": 1.8
+      },
+      {
+        "label": "Wk 12 (F)",
+        "actual": null,
+        "forecast": 2.1,
+        "upper": 2.3,
+        "lower": 1.9
+      }
+    ],
+    "summary": {
+      "model": "SARIMA (1,1,1)(1,1,0)[7]",
+      "horizon": "4 weeks",
+      "avg_weekly": 24.6,
+      "trend": "Downward",
+      "forecast_change": -76.7,
+      "mape": 4.2,
+      "n_obs": 8,
+      "plain_explain": "Demand has been slowing — the model expects sales to drop by about 77% over the next month. This may be a good time to run a promotion or hold off on large restock orders."
+    }
+  },
+  "sales-trend": {
+    "data": [
+      {
+        "week": "Wk 1",
+        "units": 24
+      },
+      {
+        "week": "Wk 2",
+        "units": 27
+      },
+      {
+        "week": "Wk 3",
+        "units": 29
+      },
+      {
+        "week": "Wk 4",
+        "units": 27
+      },
+      {
+        "week": "Wk 5",
+        "units": 24
+      },
+      {
+        "week": "Wk 6",
+        "units": 28
+      },
+      {
+        "week": "Wk 7",
+        "units": 29
+      },
+      {
+        "week": "Wk 8",
+        "units": 9
+      }
+    ]
+  },
+  "top-skus": {
+    "data": [
+      {
+        "name": "SKU-B03",
+        "revenue": 3250.0,
+        "sku": "SKU-B03"
+      },
+      {
+        "name": "SKU-B01",
+        "revenue": 2728.0,
+        "sku": "SKU-B01"
+      },
+      {
+        "name": "SKU-B02",
+        "revenue": 1920.0,
+        "sku": "SKU-B02"
+      },
+      {
+        "name": "SKU-B05",
+        "revenue": 1705.0,
+        "sku": "SKU-B05"
+      },
+      {
+        "name": "SKU-B04",
+        "revenue": 1260.0,
+        "sku": "SKU-B04"
+      },
+      {
+        "name": "SKU-B07",
+        "revenue": 1200.0,
+        "sku": "SKU-B07"
+      }
+    ]
+  },
+  "category-breakdown": {
+    "data": [
+      {
+        "category": "Skincare",
+        "revenue": 10863.0,
+        "units": 136
+      },
+      {
+        "category": "Haircare",
+        "revenue": 1846.0,
+        "units": 33
+      },
+      {
+        "category": "Makeup",
+        "revenue": 784.0,
+        "units": 28
+      }
+    ]
+  },
+  "regional": {
+    "data": [
+      {
+        "region": "Kuala Lumpur",
+        "revenue": 4440.0,
+        "orders": 31
+      },
+      {
+        "region": "Selangor",
+        "revenue": 4081.0,
+        "orders": 30
+      },
+      {
+        "region": "Penang",
+        "revenue": 2663.0,
+        "orders": 20
+      },
+      {
+        "region": "Johor Bahru",
+        "revenue": 2309.0,
+        "orders": 19
+      }
+    ]
+  },
+  "sku-list": {
+    "skus": [
+      {
+        "sku": "SKU-B01",
+        "product": "SKU-B01",
+        "category": "Skincare"
+      },
+      {
+        "sku": "SKU-B02",
+        "product": "SKU-B02",
+        "category": "Skincare"
+      },
+      {
+        "sku": "SKU-B03",
+        "product": "SKU-B03",
+        "category": "Skincare"
+      },
+      {
+        "sku": "SKU-B04",
+        "product": "SKU-B04",
+        "category": "Skincare"
+      },
+      {
+        "sku": "SKU-B05",
+        "product": "SKU-B05",
+        "category": "Skincare"
+      },
+      {
+        "sku": "SKU-B06",
+        "product": "SKU-B06",
+        "category": "Haircare"
+      },
+      {
+        "sku": "SKU-B07",
+        "product": "SKU-B07",
+        "category": "Haircare"
+      },
+      {
+        "sku": "SKU-B08",
+        "product": "SKU-B08",
+        "category": "Makeup"
+      }
+    ]
+  },
+  "session-summary": {
+    "filename": "data_beauty.csv",
+    "rows": 100,
+    "revenue": 13493.0,
+    "orders": 100,
+    "skus": 8,
+    "categories": 3,
+    "date_range": "2025-01-01 to 2025-02-20"
+  },
+  "simulate_promo_10pct": {
+    "sku": "SKU-B01",
+    "product": "SKU-B01",
+    "category": "Skincare",
+    "ped": 0.74,
+    "original_price": 88.0,
+    "discounted_price": 79.2,
+    "discount_pct": 10.0,
+    "original_velocity": 0.608,
+    "projected_velocity": 0.653,
+    "volume_change_pct": 7.4,
+    "current_weekly_revenue": 374.43,
+    "projected_weekly_revenue": 362.02,
+    "current_weekly_profit": 149.77,
+    "projected_weekly_profit": 108.61,
+    "revenue_delta": -12.41,
+    "profit_delta": -41.16,
+    "is_profitable": false,
+    "recommendation": "A 10.0% promo on 'SKU-B01' (PED=0.74) will boost volume by ~7.4%. ✗ Not profitable — this item is inelastic (PED=0.74). The margin cut of 10.0% outweighs the modest 7.4% volume gain. Try a smaller discount (e.g. 5%) or bundle strategy instead."
+  }
+}

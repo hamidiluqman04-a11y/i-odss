@@ -1,3 +1,36 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets — never commit real environment files
 .env
+*.env
+!.env.example
+
+# Django
+backend/staticfiles/
+backend/media/
+
+# Node / React
+node_modules/
+frontend/dist/
+
+# Uploaded or exported real data (sample files are tracked explicitly)
+*.csv
+!legacy/frontend/static/samples/*.csv
+!**/tests/fixtures/*.csv
+!frontend/public/samples/*.csv
+
+# Playwright MCP screenshots and logs
+.playwright-mcp/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

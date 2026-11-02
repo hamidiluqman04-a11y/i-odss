@@ -1,0 +1,773 @@
+{
+  "upload": {
+    "success": true,
+    "rows": 100,
+    "filename": "data_fashion.csv",
+    "skus": 8,
+    "date_range": "2025-01-02 to 2025-02-22",
+    "col_map": {
+      "order_id": "OrderID",
+      "sku": "SKU",
+      "date": "Date",
+      "qty": "Quantity",
+      "price": "UnitPrice",
+      "category": "Category",
+      "region": "Region",
+      "rating": "Rating",
+      "returns": "Returns"
+    },
+    "warnings": [],
+    "warning_count": 0
+  },
+  "metrics": {
+    "revenue": 19625.0,
+    "orders": 100,
+    "units": 185,
+    "aov": 196.25,
+    "skus_count": 8,
+    "at_risk": 8,
+    "days_of_data": 52,
+    "filename": "data_fashion.csv",
+    "rows": 100
+  },
+  "inventory": {
+    "items": [
+      {
+        "sku": "SKU-F01",
+        "product": "SKU-F01",
+        "category": "Tops",
+        "stock": 5,
+        "rop": 10.6,
+        "lead": 7,
+        "velocity": 1.25,
+        "safety_stock": 1.8,
+        "status": "critical",
+        "revenue": 3185.0,
+        "total_sold": 65,
+        "reorder_qty": 12,
+        "avg_rating": 4.4,
+        "return_rate": 3.1,
+        "days_until_stockout": 4.0,
+        "plain_explain": "This item sells at a velocity of 1.2 unit/day. Because your supplier takes 7 days to ship new inventory, you will run out of stock in about 4 days if you do not reorder now.",
+        "xai": "ROP=10.6: daily demand 1.25 u/day × lead 7 days + safety stock 1.8 units. Simulated stock=5 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F02",
+        "product": "SKU-F02",
+        "category": "Bottoms",
+        "stock": 2,
+        "rop": 2.6,
+        "lead": 7,
+        "velocity": 0.308,
+        "safety_stock": 0.4,
+        "status": "critical",
+        "revenue": 2064.0,
+        "total_sold": 16,
+        "reorder_qty": 2,
+        "avg_rating": 4.7,
+        "return_rate": 6.2,
+        "days_until_stockout": 6.5,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 7 days to ship new inventory, you will run out of stock in about 6 days if you do not reorder now.",
+        "xai": "ROP=2.6: daily demand 0.31 u/day × lead 7 days + safety stock 0.4 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F03",
+        "product": "SKU-F03",
+        "category": "Dresses",
+        "stock": 2,
+        "rop": 3.3,
+        "lead": 7,
+        "velocity": 0.385,
+        "safety_stock": 0.6,
+        "status": "critical",
+        "revenue": 3780.0,
+        "total_sold": 20,
+        "reorder_qty": 3,
+        "avg_rating": 4.8,
+        "return_rate": 0.0,
+        "days_until_stockout": 5.2,
+        "plain_explain": "This item sells at a velocity of 0.4 units/day. Because your supplier takes 7 days to ship new inventory, you will run out of stock in about 5 days if you do not reorder now.",
+        "xai": "ROP=3.3: daily demand 0.39 u/day × lead 7 days + safety stock 0.6 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F05",
+        "product": "SKU-F05",
+        "category": "Footwear",
+        "stock": 2,
+        "rop": 4.0,
+        "lead": 8,
+        "velocity": 0.423,
+        "safety_stock": 0.6,
+        "status": "critical",
+        "revenue": 1958.0,
+        "total_sold": 22,
+        "reorder_qty": 5,
+        "avg_rating": 4.3,
+        "return_rate": 0.0,
+        "days_until_stockout": 4.7,
+        "plain_explain": "This item sells at a velocity of 0.4 units/day. Because your supplier takes 8 days to ship new inventory, you will run out of stock in about 5 days if you do not reorder now.",
+        "xai": "ROP=4.0: daily demand 0.42 u/day × lead 8 days + safety stock 0.6 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F07",
+        "product": "SKU-F07",
+        "category": "Bottoms",
+        "stock": 2,
+        "rop": 2.3,
+        "lead": 7,
+        "velocity": 0.269,
+        "safety_stock": 0.4,
+        "status": "critical",
+        "revenue": 1386.0,
+        "total_sold": 14,
+        "reorder_qty": 2,
+        "avg_rating": 4.4,
+        "return_rate": 0.0,
+        "days_until_stockout": 7.4,
+        "plain_explain": "This item sells at a velocity of 0.3 units/day. Because your supplier takes 7 days to ship new inventory, you will run out of stock in about 7 days if you do not reorder now.",
+        "xai": "ROP=2.3: daily demand 0.27 u/day × lead 7 days + safety stock 0.4 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F08",
+        "product": "SKU-F08",
+        "category": "Accessories",
+        "stock": 2,
+        "rop": 2.4,
+        "lead": 4,
+        "velocity": 0.462,
+        "safety_stock": 0.6,
+        "status": "critical",
+        "revenue": 1896.0,
+        "total_sold": 24,
+        "reorder_qty": 2,
+        "avg_rating": 4.6,
+        "return_rate": 0.0,
+        "days_until_stockout": 4.3,
+        "plain_explain": "This item sells at a velocity of 0.5 units/day. Because your supplier takes 4 days to ship new inventory, you will run out of stock in about 4 days if you do not reorder now.",
+        "xai": "ROP=2.4: daily demand 0.46 u/day × lead 4 days + safety stock 0.6 units. Simulated stock=2 → BELOW ROP — reorder now."
+      },
+      {
+        "sku": "SKU-F04",
+        "product": "SKU-F04",
+        "category": "Outerwear",
+        "stock": 2,
+        "rop": 2.0,
+        "lead": 8,
+        "velocity": 0.212,
+        "safety_stock": 0.3,
+        "status": "warning",
+        "revenue": 3289.0,
+        "total_sold": 11,
+        "reorder_qty": 1,
+        "avg_rating": 4.7,
+        "return_rate": 9.1,
+        "days_until_stockout": 9.4,
+        "plain_explain": "At your current pace of 0.2 units/day, this item will reach its safety threshold in roughly 9 days — comfortably before your 8-day supplier lead time runs out, but it's worth keeping an eye on.",
+        "xai": "ROP=2.0: daily demand 0.21 u/day × lead 8 days + safety stock 0.3 units. Simulated stock=2 → near ROP — monitor."
+      },
+      {
+        "sku": "SKU-F06",
+        "product": "SKU-F06",
+        "category": "Tops",
+        "stock": 2,
+        "rop": 2.0,
+        "lead": 7,
+        "velocity": 0.25,
+        "safety_stock": 0.3,
+        "status": "warning",
+        "revenue": 2067.0,
+        "total_sold": 13,
+        "reorder_qty": 2,
+        "avg_rating": 4.6,
+        "return_rate": 0.0,
+        "days_until_stockout": 8.0,
+        "plain_explain": "At your current pace of 0.2 units/day, this item will reach its safety threshold in roughly 8 days — comfortably before your 7-day supplier lead time runs out, but it's worth keeping an eye on.",
+        "xai": "ROP=2.0: daily demand 0.25 u/day × lead 7 days + safety stock 0.3 units. Simulated stock=2 → near ROP — monitor."
+      }
+    ],
+    "critical_count": 6
+  },
+  "pricing": {
+    "items": [
+      {
+        "sku": "SKU-F06",
+        "product": "SKU-F06",
+        "category": "Tops",
+        "avg_price": 159.0,
+        "ped": 1.43,
+        "action": "decrease",
+        "pct": 4.3,
+        "new_price": 152.16,
+        "reason": "Highly elastic — lower price boosts volume",
+        "revenue": 2067.0,
+        "weekly_delta": 4.4,
+        "is_profitable": true,
+        "plain_explain": "'SKU-F06' is price-sensitive (PED=1.43) — a small discount tends to bring in a lot more buyers. Cutting the price by 4.3% is projected to grow weekly revenue by about RM +4.40, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.43 for 'Tops' (base=1.4, velocity modifier=1.02). Highly elastic — lower price boosts volume. Est. weekly revenue: RM 278.25 → RM 282.65 (Δ RM +4.40)."
+      },
+      {
+        "sku": "SKU-F04",
+        "product": "SKU-F04",
+        "category": "Outerwear",
+        "avg_price": 299.0,
+        "ped": 0.82,
+        "action": "increase",
+        "pct": 2.5,
+        "new_price": 306.47,
+        "reason": "Inelastic — raise price safely",
+        "revenue": 3289.0,
+        "weekly_delta": 1.76,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-F04' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.82) tells us. Raising the price by 2.5% should add roughly RM +1.76 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.82 for 'Outerwear' (base=0.8, velocity modifier=1.03). Inelastic — raise price safely. Est. weekly revenue: RM 442.75 → RM 444.51 (Δ RM +1.76)."
+      },
+      {
+        "sku": "SKU-F01",
+        "product": "SKU-F01",
+        "category": "Tops",
+        "avg_price": 49.0,
+        "ped": 1.26,
+        "action": "decrease",
+        "pct": 1.6,
+        "new_price": 48.22,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 3185.0,
+        "weekly_delta": 1.68,
+        "is_profitable": true,
+        "plain_explain": "'SKU-F01' is price-sensitive (PED=1.26) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.6% is projected to grow weekly revenue by about RM +1.68, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.26 for 'Tops' (base=1.4, velocity modifier=0.9). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 428.75 → RM 430.43 (Δ RM +1.68)."
+      },
+      {
+        "sku": "SKU-F02",
+        "product": "SKU-F02",
+        "category": "Bottoms",
+        "avg_price": 129.0,
+        "ped": 1.22,
+        "action": "decrease",
+        "pct": 1.3,
+        "new_price": 127.32,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 2064.0,
+        "weekly_delta": 0.73,
+        "is_profitable": true,
+        "plain_explain": "'SKU-F02' is price-sensitive (PED=1.22) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.3% is projected to grow weekly revenue by about RM +0.73, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.22 for 'Bottoms' (base=1.2, velocity modifier=1.02). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 277.85 → RM 278.58 (Δ RM +0.73)."
+      },
+      {
+        "sku": "SKU-F07",
+        "product": "SKU-F07",
+        "category": "Bottoms",
+        "avg_price": 99.0,
+        "ped": 1.23,
+        "action": "decrease",
+        "pct": 1.4,
+        "new_price": 97.61,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 1386.0,
+        "weekly_delta": 0.55,
+        "is_profitable": true,
+        "plain_explain": "'SKU-F07' is price-sensitive (PED=1.23) — a small discount tends to bring in a lot more buyers. Cutting the price by 1.4% is projected to grow weekly revenue by about RM +0.55, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.23 for 'Bottoms' (base=1.2, velocity modifier=1.02). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 186.58 → RM 187.13 (Δ RM +0.55)."
+      },
+      {
+        "sku": "SKU-F05",
+        "product": "SKU-F05",
+        "category": "Footwear",
+        "avg_price": 89.0,
+        "ped": 1.15,
+        "action": "decrease",
+        "pct": 0.9,
+        "new_price": 88.2,
+        "reason": "Elastic — small reduction lifts revenue",
+        "revenue": 1958.0,
+        "weekly_delta": 0.33,
+        "is_profitable": true,
+        "plain_explain": "'SKU-F05' is price-sensitive (PED=1.15) — a small discount tends to bring in a lot more buyers. Cutting the price by 0.9% is projected to grow weekly revenue by about RM +0.33, because the extra sales volume outweighs the lower margin.",
+        "xai": "PED=1.15 for 'Footwear' (base=1.15, velocity modifier=1.0). Elastic — small reduction lifts revenue. Est. weekly revenue: RM 263.58 → RM 263.91 (Δ RM +0.33)."
+      },
+      {
+        "sku": "SKU-F03",
+        "product": "SKU-F03",
+        "category": "Dresses",
+        "avg_price": 189.0,
+        "ped": 0.91,
+        "action": "increase",
+        "pct": 0.7,
+        "new_price": 190.32,
+        "reason": "Mildly inelastic — modest increase",
+        "revenue": 3780.0,
+        "weekly_delta": 0.29,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-F03' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.91) tells us. Raising the price by 0.7% should add roughly RM +0.29 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.91 for 'Dresses' (base=0.9, velocity modifier=1.01). Mildly inelastic — modest increase. Est. weekly revenue: RM 508.85 → RM 509.14 (Δ RM +0.29)."
+      },
+      {
+        "sku": "SKU-F08",
+        "product": "SKU-F08",
+        "category": "Accessories",
+        "avg_price": 79.0,
+        "ped": 0.95,
+        "action": "increase",
+        "pct": 0.4,
+        "new_price": 79.32,
+        "reason": "Mildly inelastic — modest increase",
+        "revenue": 1896.0,
+        "weekly_delta": 0.06,
+        "is_profitable": true,
+        "plain_explain": "Shoppers buying 'SKU-F08' barely change how much they buy even when the price goes up — that's what the low elasticity score (PED=0.95) tells us. Raising the price by 0.4% should add roughly RM +0.06 extra revenue per week without scaring customers away.",
+        "xai": "PED=0.95 for 'Accessories' (base=0.95, velocity modifier=1.0). Mildly inelastic — modest increase. Est. weekly revenue: RM 255.23 → RM 255.29 (Δ RM +0.06)."
+      }
+    ]
+  },
+  "bundles": {
+    "pairs": [
+      {
+        "sku_a": "SKU-F06",
+        "sku_b": "SKU-F07",
+        "product_a": "SKU-F06",
+        "product_b": "SKU-F07",
+        "support": 0.04,
+        "confidence": 0.308,
+        "lift": 2.2,
+        "count": 4,
+        "suggested_discount": 9,
+        "price_a": 159.0,
+        "price_b": 99.0,
+        "ideal_bundle_price": 234.78,
+        "cross_ped": -0.36,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F06, 31% also bought SKU-F07 in the same order — that's 2.2× more often than if the two were unrelated. Packaging them together at RM 234.78 (9% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=2.2: customers buying SKU-F06 are 2.2× more likely to also buy SKU-F07 vs random chance. Cross-PED=-0.36 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F04",
+        "sku_b": "SKU-F06",
+        "product_a": "SKU-F04",
+        "product_b": "SKU-F06",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 2.1,
+        "count": 3,
+        "suggested_discount": 8,
+        "price_a": 299.0,
+        "price_b": 159.0,
+        "ideal_bundle_price": 421.36,
+        "cross_ped": -0.33,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F04, 27% also bought SKU-F06 in the same order — that's 2.1× more often than if the two were unrelated. Packaging them together at RM 421.36 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=2.1: customers buying SKU-F04 are 2.1× more likely to also buy SKU-F06 vs random chance. Cross-PED=-0.33 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F04",
+        "sku_b": "SKU-F07",
+        "product_a": "SKU-F04",
+        "product_b": "SKU-F07",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 1.95,
+        "count": 3,
+        "suggested_discount": 8,
+        "price_a": 299.0,
+        "price_b": 99.0,
+        "ideal_bundle_price": 366.16,
+        "cross_ped": -0.285,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F04, 27% also bought SKU-F07 in the same order — that's 1.95× more often than if the two were unrelated. Packaging them together at RM 366.16 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.95: customers buying SKU-F04 are 1.95× more likely to also buy SKU-F07 vs random chance. Cross-PED=-0.285 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F02",
+        "sku_b": "SKU-F06",
+        "product_a": "SKU-F02",
+        "product_b": "SKU-F06",
+        "support": 0.04,
+        "confidence": 0.308,
+        "lift": 1.92,
+        "count": 4,
+        "suggested_discount": 8,
+        "price_a": 129.0,
+        "price_b": 159.0,
+        "ideal_bundle_price": 264.96,
+        "cross_ped": -0.276,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F02, 31% also bought SKU-F06 in the same order — that's 1.92× more often than if the two were unrelated. Packaging them together at RM 264.96 (8% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.92: customers buying SKU-F02 are 1.92× more likely to also buy SKU-F06 vs random chance. Cross-PED=-0.276 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F02",
+        "sku_b": "SKU-F07",
+        "product_a": "SKU-F02",
+        "product_b": "SKU-F07",
+        "support": 0.04,
+        "confidence": 0.286,
+        "lift": 1.79,
+        "count": 4,
+        "suggested_discount": 7,
+        "price_a": 129.0,
+        "price_b": 99.0,
+        "ideal_bundle_price": 212.04,
+        "cross_ped": -0.237,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F02, 29% also bought SKU-F07 in the same order — that's 1.79× more often than if the two were unrelated. Packaging them together at RM 212.04 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.79: customers buying SKU-F02 are 1.79× more likely to also buy SKU-F07 vs random chance. Cross-PED=-0.237 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F02",
+        "sku_b": "SKU-F04",
+        "product_a": "SKU-F02",
+        "product_b": "SKU-F04",
+        "support": 0.03,
+        "confidence": 0.273,
+        "lift": 1.7,
+        "count": 3,
+        "suggested_discount": 7,
+        "price_a": 129.0,
+        "price_b": 299.0,
+        "ideal_bundle_price": 398.04,
+        "cross_ped": -0.21,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F02, 27% also bought SKU-F04 in the same order — that's 1.7× more often than if the two were unrelated. Packaging them together at RM 398.04 (7% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.7: customers buying SKU-F02 are 1.7× more likely to also buy SKU-F04 vs random chance. Cross-PED=-0.21 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F02",
+        "sku_b": "SKU-F03",
+        "product_a": "SKU-F02",
+        "product_b": "SKU-F03",
+        "support": 0.05,
+        "confidence": 0.312,
+        "lift": 1.56,
+        "count": 5,
+        "suggested_discount": 6,
+        "price_a": 129.0,
+        "price_b": 189.0,
+        "ideal_bundle_price": 298.92,
+        "cross_ped": -0.168,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F02, 31% also bought SKU-F03 in the same order — that's 1.56× more often than if the two were unrelated. Packaging them together at RM 298.92 (6% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.56: customers buying SKU-F02 are 1.56× more likely to also buy SKU-F03 vs random chance. Cross-PED=-0.168 (complements — bundle them)."
+      },
+      {
+        "sku_a": "SKU-F03",
+        "sku_b": "SKU-F06",
+        "product_a": "SKU-F03",
+        "product_b": "SKU-F06",
+        "support": 0.04,
+        "confidence": 0.308,
+        "lift": 1.54,
+        "count": 4,
+        "suggested_discount": 6,
+        "price_a": 189.0,
+        "price_b": 159.0,
+        "ideal_bundle_price": 327.12,
+        "cross_ped": -0.162,
+        "is_profitable": true,
+        "plain_explain": "Out of everyone who bought SKU-F03, 31% also bought SKU-F06 in the same order — that's 1.54× more often than if the two were unrelated. Packaging them together at RM 327.12 (6% off the second item) is likely to raise your average order value without needing new customers.",
+        "xai": "Lift=1.54: customers buying SKU-F03 are 1.54× more likely to also buy SKU-F06 vs random chance. Cross-PED=-0.162 (complements — bundle them)."
+      }
+    ],
+    "total_baskets": 0,
+    "total_orders": 100,
+    "mode": "cooccurrence_fallback",
+    "message": "⚠ Low multi-item basket volume — using co-occurrence fallback. Upload data with multiple SKUs per order for full FP-Growth results."
+  },
+  "forecast": {
+    "series": [
+      {
+        "label": "Wk 1",
+        "actual": 26,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 2",
+        "actual": 26,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 3",
+        "actual": 22,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 4",
+        "actual": 23,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 5",
+        "actual": 24,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 6",
+        "actual": 27,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 7",
+        "actual": 26,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 8",
+        "actual": 11,
+        "forecast": null,
+        "upper": null,
+        "lower": null
+      },
+      {
+        "label": "Wk 9 (F)",
+        "actual": null,
+        "forecast": 8.1,
+        "upper": 8.9,
+        "lower": 7.3
+      },
+      {
+        "label": "Wk 10 (F)",
+        "actual": null,
+        "forecast": 4.4,
+        "upper": 4.8,
+        "lower": 4.0
+      },
+      {
+        "label": "Wk 11 (F)",
+        "actual": null,
+        "forecast": 0.6,
+        "upper": 0.7,
+        "lower": 0.5
+      },
+      {
+        "label": "Wk 12 (F)",
+        "actual": null,
+        "forecast": 0.6,
+        "upper": 0.7,
+        "lower": 0.5
+      }
+    ],
+    "summary": {
+      "model": "SARIMA (1,1,1)(1,1,0)[7]",
+      "horizon": "4 weeks",
+      "avg_weekly": 23.1,
+      "trend": "Downward",
+      "forecast_change": -94.5,
+      "mape": 4.2,
+      "n_obs": 8,
+      "plain_explain": "Demand has been slowing — the model expects sales to drop by about 94% over the next month. This may be a good time to run a promotion or hold off on large restock orders."
+    }
+  },
+  "sales-trend": {
+    "data": [
+      {
+        "week": "Wk 1",
+        "units": 26
+      },
+      {
+        "week": "Wk 2",
+        "units": 26
+      },
+      {
+        "week": "Wk 3",
+        "units": 22
+      },
+      {
+        "week": "Wk 4",
+        "units": 23
+      },
+      {
+        "week": "Wk 5",
+        "units": 24
+      },
+      {
+        "week": "Wk 6",
+        "units": 27
+      },
+      {
+        "week": "Wk 7",
+        "units": 26
+      },
+      {
+        "week": "Wk 8",
+        "units": 11
+      }
+    ]
+  },
+  "top-skus": {
+    "data": [
+      {
+        "name": "SKU-F03",
+        "revenue": 3780.0,
+        "sku": "SKU-F03"
+      },
+      {
+        "name": "SKU-F04",
+        "revenue": 3289.0,
+        "sku": "SKU-F04"
+      },
+      {
+        "name": "SKU-F01",
+        "revenue": 3185.0,
+        "sku": "SKU-F01"
+      },
+      {
+        "name": "SKU-F06",
+        "revenue": 2067.0,
+        "sku": "SKU-F06"
+      },
+      {
+        "name": "SKU-F02",
+        "revenue": 2064.0,
+        "sku": "SKU-F02"
+      },
+      {
+        "name": "SKU-F05",
+        "revenue": 1958.0,
+        "sku": "SKU-F05"
+      }
+    ]
+  },
+  "category-breakdown": {
+    "data": [
+      {
+        "category": "Tops",
+        "revenue": 5252.0,
+        "units": 78
+      },
+      {
+        "category": "Bottoms",
+        "revenue": 3450.0,
+        "units": 30
+      },
+      {
+        "category": "Dresses",
+        "revenue": 3780.0,
+        "units": 20
+      },
+      {
+        "category": "Outerwear",
+        "revenue": 3289.0,
+        "units": 11
+      },
+      {
+        "category": "Footwear",
+        "revenue": 1958.0,
+        "units": 22
+      },
+      {
+        "category": "Accessories",
+        "revenue": 1896.0,
+        "units": 24
+      }
+    ]
+  },
+  "regional": {
+    "data": [
+      {
+        "region": "Kuala Lumpur",
+        "revenue": 6571.0,
+        "orders": 32
+      },
+      {
+        "region": "Selangor",
+        "revenue": 5743.0,
+        "orders": 30
+      },
+      {
+        "region": "Penang",
+        "revenue": 3717.0,
+        "orders": 19
+      },
+      {
+        "region": "Johor Bahru",
+        "revenue": 3594.0,
+        "orders": 19
+      }
+    ]
+  },
+  "sku-list": {
+    "skus": [
+      {
+        "sku": "SKU-F01",
+        "product": "SKU-F01",
+        "category": "Tops"
+      },
+      {
+        "sku": "SKU-F02",
+        "product": "SKU-F02",
+        "category": "Bottoms"
+      },
+      {
+        "sku": "SKU-F03",
+        "product": "SKU-F03",
+        "category": "Dresses"
+      },
+      {
+        "sku": "SKU-F04",
+        "product": "SKU-F04",
+        "category": "Outerwear"
+      },
+      {
+        "sku": "SKU-F05",
+        "product": "SKU-F05",
+        "category": "Footwear"
+      },
+      {
+        "sku": "SKU-F06",
+        "product": "SKU-F06",
+        "category": "Tops"
+      },
+      {
+        "sku": "SKU-F07",
+        "product": "SKU-F07",
+        "category": "Bottoms"
+      },
+      {
+        "sku": "SKU-F08",
+        "product": "SKU-F08",
+        "category": "Accessories"
+      }
+    ]
+  },
+  "session-summary": {
+    "filename": "data_fashion.csv",
+    "rows": 100,
+    "revenue": 19625.0,
+    "orders": 100,
+    "skus": 8,
+    "categories": 6,
+    "date_range": "2025-01-02 to 2025-02-22"
+  },
+  "simulate_promo_10pct": {
+    "sku": "SKU-F01",
+    "product": "SKU-F01",
+    "category": "Tops",
+    "ped": 1.26,
+    "original_price": 49.0,
+    "discounted_price": 44.1,
+    "discount_pct": 10.0,
+    "original_velocity": 1.25,
+    "projected_velocity": 1.407,
+    "volume_change_pct": 12.6,
+    "current_weekly_revenue": 428.75,
+    "projected_weekly_revenue": 434.34,
+    "current_weekly_profit": 171.5,
+    "projected_weekly_profit": 130.3,
+    "revenue_delta": 5.59,
+    "profit_delta": -41.2,
+    "is_profitable": false,
+    "recommendation": "A 10.0% promo on 'SKU-F01' (PED=1.26) will boost volume by ~12.6%. ✗ Not profitable — this item is inelastic (PED=1.26). The margin cut of 10.0% outweighs the modest 12.6% volume gain. Try a smaller discount (e.g. 5%) or bundle strategy instead."
+  }
+}

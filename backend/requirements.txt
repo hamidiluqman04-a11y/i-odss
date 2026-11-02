@@ -1,0 +1,20 @@
+# Web framework and API
+Django==5.2.18
+djangorestframework==3.16.1
+
+# PostgreSQL driver
+psycopg[binary]==3.2.13
+
+# Loads backend/.env into environment variables
+python-dotenv==1.1.1
+
+# Data analysis and forecasting (SARIMA)
+numpy==2.3.5
+pandas==2.3.3
+statsmodels==0.14.6
+mlxtend==0.24.0
+
+# Testing
+pytest==8.3.5
+pytest-django==4.11.1
+httpx==0.28.1        # used by scripts/smoke_test.py
