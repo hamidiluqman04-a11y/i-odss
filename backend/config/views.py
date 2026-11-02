@@ -8,6 +8,9 @@ from rest_framework.response import Response
 
 logger = logging.getLogger(__name__)
 
+# Lets start.ps1 tell this backend apart from other apps that answer /api/health/.
+SERVICE_NAME = "I-ODSS"
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -20,7 +23,7 @@ def health(request):
         # Full details go to the server log only, never to the client.
         logger.exception("Health check: database unreachable")
         return Response(
-            {"status": "error", "database": "unavailable"},
+            {"service": SERVICE_NAME, "status": "error", "database": "unavailable"},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
-    return Response({"status": "ok", "database": "ok"})
+    return Response({"service": SERVICE_NAME, "status": "ok", "database": "ok"})

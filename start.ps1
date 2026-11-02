@@ -9,12 +9,18 @@ param([switch]$NoBrowser)
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $python = Join-Path $root ".venv\Scripts\python.exe"
-$healthUrl = "http://127.0.0.1:8000/api/health/"
+$ports = 8000..8010   # the backend uses the first free one of these
 
 function Fail($text) { Write-Host ""; Write-Host "I-ODSS DID NOT START: $text" -ForegroundColor Red; exit 1 }
-function BackendHealthy {
-    try { (Invoke-WebRequest $healthUrl -UseBasicParsing -TimeoutSec 2).StatusCode -eq 200 } catch { $false }
+
+# True only when the server on this port is I-ODSS itself (other apps may answer /api/health/ too).
+function IsIodss($port) {
+    try {
+        $r = Invoke-WebRequest "http://127.0.0.1:$port/api/health/" -UseBasicParsing -TimeoutSec 2
+        ($r.Content | ConvertFrom-Json).service -eq "I-ODSS"
+    } catch { $false }
 }
+function PortBusy($port) { [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
 
 # ── 1. Was setup run? ────────────────────────────────────────────────────
 $missing = @()
@@ -30,32 +36,34 @@ if ($pgService -and $pgService.Status -ne "Running") {
 }
 
 # ── 3. Backend (Django) ──────────────────────────────────────────────────
-if (BackendHealthy) {
-    Write-Host "Backend is already running."
+$port = $ports | Where-Object { (PortBusy $_) -and (IsIodss $_) } | Select-Object -First 1
+if ($port) {
+    Write-Host "Backend is already running on port $port."
 } else {
-    if (Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue) {
-        Fail "port 8000 is used by another program. Close it (or restart the computer) and try again."
-    }
+    $port = $ports | Where-Object { -not (PortBusy $_) } | Select-Object -First 1
+    if (-not $port) { Fail "ports $($ports[0])-$($ports[-1]) are all in use by other programs." }
+    if ($port -ne $ports[0]) { Write-Host "Port $($ports[0]) is used by another program, so the backend uses port $port." }
     Write-Host "Starting the backend..."
     $backendCmd = "`$Host.UI.RawUI.WindowTitle = 'I-ODSS backend (close to stop)'; " +
                   "Set-Location '$root\backend'; " +
                   "& '$python' manage.py migrate --noinput; " +
-                  "& '$python' manage.py runserver 8000"
+                  "& '$python' manage.py runserver $port"
     Start-Process powershell -ArgumentList "-NoExit", "-NoProfile", "-Command", $backendCmd | Out-Null
 
     # Wait until Django answers, so the page never opens on "server not responding".
     $deadline = (Get-Date).AddSeconds(90)
-    while (-not (BackendHealthy)) {
+    while (-not (IsIodss $port)) {
         if ((Get-Date) -gt $deadline) { Fail "the backend did not start within 90 seconds. Look at the 'I-ODSS backend' window for the error." }
         Start-Sleep -Milliseconds 700
     }
-    Write-Host "Backend ready." -ForegroundColor Green
+    Write-Host "Backend ready on port $port." -ForegroundColor Green
 }
 
 # ── 4. Frontend (React) — Vite opens the browser on whichever port it gets ──
 Write-Host "Starting the frontend..."
 $open = if ($NoBrowser) { "" } else { " -- --open" }
 $frontendCmd = "`$Host.UI.RawUI.WindowTitle = 'I-ODSS frontend (close to stop)'; " +
+               "`$env:IODSS_API_URL = 'http://127.0.0.1:$port'; " +
                "Set-Location '$root\frontend'; npm run dev$open"
 Start-Process powershell -ArgumentList "-NoExit", "-NoProfile", "-Command", $frontendCmd | Out-Null
 

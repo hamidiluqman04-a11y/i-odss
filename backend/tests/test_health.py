@@ -8,7 +8,7 @@ from django.db.utils import OperationalError
 def test_health_ok_when_database_reachable(client):
     r = client.get("/api/health/")
     assert r.status_code == 200
-    assert r.json() == {"status": "ok", "database": "ok"}
+    assert r.json() == {"service": "I-ODSS", "status": "ok", "database": "ok"}
 
 
 def test_health_reports_503_without_leaking_details(client):
@@ -16,7 +16,7 @@ def test_health_reports_503_without_leaking_details(client):
     with mock.patch("config.views.connection.cursor", side_effect=OperationalError(secret_message)):
         r = client.get("/api/health/")
     assert r.status_code == 503
-    assert r.json() == {"status": "error", "database": "unavailable"}
+    assert r.json() == {"service": "I-ODSS", "status": "error", "database": "unavailable"}
     assert "password" not in r.content.decode()
 
 
