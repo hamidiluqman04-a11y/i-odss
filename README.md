@@ -1,5 +1,7 @@
 # I-ODSS — Intelligent Operational Decision Support System
 
+[![CI](https://github.com/hamidiluqman04-a11y/i-odss/actions/workflows/ci.yml/badge.svg)](https://github.com/hamidiluqman04-a11y/i-odss/actions/workflows/ci.yml)
+
 CDCS230 Final Year Project · **Django + Django REST Framework + React + PostgreSQL**
 
 I-ODSS helps small e-commerce sellers make decisions from their own sales exports
@@ -109,8 +111,8 @@ Stop either server with **Ctrl+C**.
 
 | Suite | Where | Command | What it covers |
 |---|---|---|---|
-| Backend | `backend` | `..\.venv\Scripts\python -m pytest` | Algorithms, CSV validation, API, login, privacy, end-to-end workflow (215 tests, ~1.5 min) |
-| Frontend | `frontend` | `npm test` | API client, pages, forms, error states (45 tests) |
+| Backend | `backend` | `..\.venv\Scripts\python -m pytest` | Algorithms, CSV validation, API, login, privacy, end-to-end workflow (228 tests, ~1 min) |
+| Frontend | `frontend` | `npm test` | API client, pages, forms, error states, chart text alternatives (52 tests) |
 | Live smoke test | `backend` | `..\.venv\Scripts\python scripts\smoke_test.py` | A running server, checked from outside (16 checks) |
 | Legacy baseline | project root | `.venv\Scripts\python -m pytest legacy\tests` | The original prototype's recorded outputs (20 tests) |
 
@@ -262,14 +264,39 @@ The "Quick Demo Access" button was removed on purpose: it skipped login entirely
   upload page does not offer them yet.
 - PED from sales history shows association, not proof of cause (promotions or seasons
   can coincide with price changes). The app says this in its explanations.
-- Rate-limit counters are kept in memory, which is fine for a single development
-  server but not for a multi-server deployment.
-- The setup is for local development (`DJANGO_DEBUG=True`, Vite dev server).
-  Production deployment is not covered.
+- Price and promotion projections assume **constant elasticity**: buyers are assumed to
+  react to a 20% change the same way (proportionally) as to a 5% one. The app states this
+  next to every projection and warns when a discount goes below any price in the data.
+- Days with no sales count as zero demand. A sales export cannot distinguish "nothing
+  sold" from "rows missing", so runs of 7+ empty days are reported as possible gaps.
+- Rate-limit counters are kept in memory, which is fine for a single server but not for
+  a multi-server deployment (use a shared cache such as Redis there).
+- The scripts and instructions above are for local development (`DJANGO_DEBUG=True`,
+  Vite dev server). For a public server, follow the checklist below.
 
 ---
 
-## 9. Working safely with Git
+## 9. Deployment checklist
+
+Before putting I-ODSS on a public server:
+
+- [ ] `DJANGO_DEBUG=False`. Debug mode shows internal details on error pages.
+- [ ] `DJANGO_SECRET_KEY` is a new long random value, different from development.
+- [ ] `DJANGO_ALLOWED_HOSTS` lists only your domain, e.g. `iodss.example.com`.
+- [ ] `DJANGO_CSRF_TRUSTED_ORIGINS` lists your HTTPS address, e.g. `https://iodss.example.com`.
+- [ ] The site is served over HTTPS, then `DJANGO_HTTPS=True` (secure cookies, HTTP→HTTPS
+      redirect, HSTS). Raise `DJANGO_HSTS_SECONDS` to `31536000` once HTTPS is stable.
+- [ ] Database password is strong and the database is not reachable from the internet.
+- [ ] Django runs under a production server (e.g. `gunicorn` or `waitress`), not `runserver`.
+- [ ] The React app is built with `npm run build`, and `frontend/dist` is served by a web
+      server that also forwards `/api/` to Django (same origin, so login cookies work).
+- [ ] Rate limits use a shared cache if more than one server process runs.
+- [ ] `..\.venv\Scripts\python manage.py check --deploy` shows no warnings except
+      `security.W021` (HSTS preload, which is optional and hard to undo).
+
+---
+
+## 10. Working safely with Git
 
 - See what changed: `git status`, then `git diff` (or `git diff --staged`).
 - Undo uncommitted changes to one file: `git restore path\to\file`.

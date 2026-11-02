@@ -54,7 +54,28 @@ describe("Forecast", () => {
 
   it("warns when a simple average beat SARIMA", () => {
     show(<Forecast data={{ ...FORECAST, evaluation: { ...FORECAST.evaluation, mape: 20, baseline_mape: 10 } }} />);
-    expect(screen.getByText(/simple 4-week average was more accurate/)).toBeInTheDocument();
+    expect(screen.getByText(/Simply averaging the last 4 weeks was more accurate/)).toBeInTheDocument();
+  });
+
+  it("shows the seasonal-naive benchmark and warns when repeating last week did better", () => {
+    const ev = { ...FORECAST.evaluation, mape: 13.6, baseline_mape: 14.5, seasonal_naive_mape: 9.1, seasonal_naive_mae: 2.4 };
+    show(<Forecast data={{ ...FORECAST, evaluation: ev }} />);
+    expect(screen.getByText("9.1%")).toBeInTheDocument();
+    expect(screen.getByText(/Simply repeating last week was more accurate/)).toBeInTheDocument();
+  });
+
+  it("praises the forecast only when it beats both benchmarks", () => {
+    const ev = { ...FORECAST.evaluation, mape: 8, baseline_mape: 14.5, seasonal_naive_mape: 9.1 };
+    show(<Forecast data={{ ...FORECAST, evaluation: ev }} />);
+    expect(screen.getByText(/at least as accurate as simply averaging the last 4 weeks or repeating last week/))
+      .toBeInTheDocument();
+  });
+
+  it("describes the chart for screen readers", () => {
+    show(<Forecast data={FORECAST} />);
+    const chart = screen.getByRole("img", { name: /actual units sold for 2 weeks, followed by a 2-week forecast/ });
+    expect(chart).toHaveAccessibleName(/Last actual week \(Wk 2\): 46 units/);
+    expect(chart).toHaveAccessibleName(/Forecast: 50 to 51 units per week, likely range 39 to 64/);
   });
 
   it("explains when there is too little history", () => {
@@ -151,6 +172,25 @@ describe("Pricing", () => {
     expect(screen.getByText("RM 400.00 → RM 441.00")).toBeInTheDocument();
   });
 
+  it("states the constant-elasticity assumption next to a projection", async () => {
+    const item = { ...ESTIMATED, assumption: "Assumes buyers react to every price change the same way." };
+    show(<Pricing data={{ ...PRICING, items: [item] }} datasetId={1} />);
+    await userEvent.setup().click(screen.getByRole("button", { name: "Why?" }));
+    expect(screen.getByText(/Assumes buyers react to every price change the same way/)).toBeInTheDocument();
+  });
+
+  it("shows no numbers to act on when the evidence is weak (p ≥ 0.05)", async () => {
+    // Even if a projection were present in the data, weak evidence must not display it.
+    const weak = { ...ESTIMATED, reliability: "weak", p_value: 0.4, recommendation: "no_recommendation",
+      test_change_pct: 0, test_price: null, plain_explain: "Sales did not move in a clear pattern with price." };
+    show(<Pricing data={{ ...PRICING, items: [weak] }} datasetId={1} />);
+    expect(screen.getByRole("cell", { name: "No advice — no clear pattern" })).toBeInTheDocument();
+    await userEvent.setup().click(screen.getByRole("button", { name: "Why?" }));
+    expect(screen.getByText(/did not move in a clear pattern/)).toBeInTheDocument();
+    expect(screen.queryByText("Weekly profit (est.)")).not.toBeInTheDocument();
+    expect(screen.queryByText("RM 400.00 → RM 441.00")).not.toBeInTheDocument();
+  });
+
   it("runs the promotion simulator with the chosen values", async () => {
     api.simulatePromo.mockResolvedValue({
       original_price: 189, discounted_price: 170.1, break_even_volume_increase_pct: 33.3, volume_change_pct: null,
@@ -168,6 +208,20 @@ describe("Pricing", () => {
     expect(await screen.findByText("+33.3%")).toBeInTheDocument();
     expect(screen.getByText("Unknown")).toBeInTheDocument();
     expect(screen.getByText(/only pays off if you sell at least 33% more/)).toBeInTheDocument();
+    expect(screen.queryByText(/Assumption:/)).not.toBeInTheDocument();   // no projection, nothing assumed
+  });
+
+  it("shows the promotion's assumption when it projects sales", async () => {
+    api.simulatePromo.mockResolvedValue({
+      original_price: 10, discounted_price: 7, break_even_volume_increase_pct: 300, volume_change_pct: 104,
+      projection: { weekly_profit_now: 400, weekly_profit_new: 210 }, beyond_observed_prices: true,
+      assumption: "Assumes buyers react to every price change the same way they did in your data.",
+      plain_explain: "The discounted price (7.00) is lower than any price in your data (8.00).",
+    });
+    show(<Pricing data={PRICING} datasetId={7} />);
+    await userEvent.setup().click(screen.getByRole("button", { name: "Simulate" }));
+    expect(await screen.findByText(/lower than any price in your data/)).toBeInTheDocument();
+    expect(screen.getByText(/Assumes buyers react to every price change/)).toBeInTheDocument();
   });
 
   it("checks the discount before calling the server", async () => {

@@ -43,6 +43,18 @@ SESSION_COOKIE_HTTPONLY = True      # JavaScript cannot read the login cookie
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 
+# Production behind HTTPS: set DJANGO_HTTPS=True. Cookies are then only sent over
+# HTTPS, plain-HTTP requests are redirected, and browsers are told to remember
+# HTTPS (HSTS). Leave it off for local development on http://localhost.
+if env("DJANGO_HTTPS", "False").lower() == "true":
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = int(env("DJANGO_HSTS_SECONDS", "3600"))   # raise to 31536000 once HTTPS is stable
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # Most hosts terminate HTTPS at a proxy and pass this header on.
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",

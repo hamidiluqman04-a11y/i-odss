@@ -96,10 +96,20 @@ def _rounded(value, digits):
     return round(value, digits) if math.isfinite(value) else None
 
 
+CONSTANT_ELASTICITY_NOTE = (
+    "Assumes buyers react to every price change the same way they did in your data (constant "
+    "elasticity). The further a new price is from the prices you have actually charged, the less "
+    "reliable this estimate becomes."
+)
+
+
 def project(weekly_units, price, ped, margin, change):
     """
     Estimated weekly revenue and profit if the price changes by `change`
-    (e.g. -0.10 for 10% off), assuming the elasticity stays constant.
+    (e.g. -0.10 for 10% off), assuming the elasticity stays constant:
+    units scale by (1 + change) ** PED for ANY size of change. That is a
+    simplification — real buyers react differently to a 5% and a 50% change —
+    so callers must label the result as an estimate (see CONSTANT_ELASTICITY_NOTE).
     Unit cost is taken as (1 - margin) × current price.
     """
     cost = (1 - margin) * price
@@ -201,6 +211,7 @@ def pricing_analysis(rows, margin=DEFAULT_MARGIN):
             "recommendation": "no_recommendation",
             "test_change_pct": 0, "test_price": None,
             "projection": None,
+            "assumption": None,
             "margin_assumption": margin,
         }
         if est:
@@ -219,6 +230,9 @@ def pricing_analysis(rows, margin=DEFAULT_MARGIN):
                 else:
                     item["recommendation"] = "hold"
                     item["projection"] = project(weekly_units, current_price, est["ped"], margin, 0.0)
+                item["assumption"] = CONSTANT_ELASTICITY_NOTE
+            # Weak evidence (p >= 0.05) or sales rising with price: the "no_recommendation"
+            # defaults above stay — no projection, no test price, nothing to act on.
         item["plain_explain"] = _explain(item, len(weekly))
         item["xai"] = (
             f"Weekly log-log OLS over {len(weekly)} weeks: ln(units) = a + PED·ln(price). "
@@ -252,6 +266,8 @@ def promo_inputs(rows):
         inputs[sku] = {
             "product": sku_rows[-1]["product"],
             "current_price": current_price,
+            "price_min": min(r["price"] for r in sku_rows),   # lowest price ever charged
+            "price_max": max(r["price"] for r in sku_rows),
             "weekly_units": weekly_units,
             "ped_status": status,
             "ped": est["ped"] if est else None,
@@ -282,17 +298,24 @@ def simulate_promo_from(sku, inputs, discount_pct, margin=DEFAULT_MARGIN):
     d = discount_pct / 100
     current_price, weekly_units = inputs["current_price"], inputs["weekly_units"]
     ped, reliability, name = inputs["ped"], inputs["reliability"], inputs["product"]
+    discounted_price = current_price * (1 - d)
+    # Results saved before this field existed have no price range; treat as unknown.
+    lowest_seen = inputs.get("price_min")
+    beyond_data = lowest_seen is not None and discounted_price < lowest_seen * 0.995
 
     # Profit per unit falls from margin×p to (margin−d)×p, so units must rise by d/(margin−d).
     break_even = round(d / (margin - d) * 100, 1) if d < margin else None
     result = {
         "sku": sku, "product": name, "discount_pct": discount_pct,
         "original_price": round(current_price, 2),
-        "discounted_price": round(current_price * (1 - d), 2),
+        "discounted_price": round(discounted_price, 2),
+        "lowest_price_seen": round(lowest_seen, 2) if lowest_seen is not None else None,
+        "beyond_observed_prices": beyond_data,
         "margin_assumption": margin,
         "break_even_volume_increase_pct": break_even,
         "ped_status": inputs["ped_status"], "ped": ped, "reliability": reliability,
         "projection": None, "volume_change_pct": None, "is_profitable_estimate": None,
+        "assumption": None,
     }
 
     if break_even is None:
@@ -309,13 +332,19 @@ def simulate_promo_from(sku, inputs, discount_pct, margin=DEFAULT_MARGIN):
             proj = project(weekly_units, current_price, ped, margin, -d)
             volume_change = round((proj["weekly_units_new"] / proj["weekly_units_now"] - 1) * 100, 1)
             profitable = proj["weekly_profit_new"] > proj["weekly_profit_now"]
-            result.update(projection=proj, volume_change_pct=volume_change, is_profitable_estimate=profitable)
+            result.update(projection=proj, volume_change_pct=volume_change, is_profitable_estimate=profitable,
+                          assumption=CONSTANT_ELASTICITY_NOTE)
             explain += (
                 f"Your past sales (PED {ped}) suggest about {volume_change:.0f}% more units, so this "
                 f"promotion is estimated to {'raise' if profitable else 'lower'} weekly profit "
                 f"({proj['weekly_profit_now']:.2f} → {proj['weekly_profit_new']:.2f}). This is an estimate, "
                 f"not a guarantee."
             )
+            if beyond_data:
+                explain += (
+                    f" The discounted price ({discounted_price:.2f}) is lower than any price in your data "
+                    f"({lowest_seen:.2f}), so this estimate goes beyond what your sales history can show."
+                )
         else:
             explain += (
                 "Your data does not show reliably how buyers of this product react to price, so I-ODSS "

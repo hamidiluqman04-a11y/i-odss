@@ -10,7 +10,11 @@ plus a sine wave, and always reported MAPE = 4.2%. Here:
     Daily forecasts are added up into weekly totals for display.
   - Accuracy is MEASURED: the model is re-fitted without the last 4 weeks,
     asked to predict them, and compared with what really happened (MAPE).
-    A simple 4-week average is scored the same way as a reference point.
+    Two simple benchmarks are scored the same way: a 4-week average and a
+    seasonal-naive forecast (repeat the last week, the standard baseline for
+    a weekly pattern).
+  - Long runs of days with no sales are reported as possible missing data,
+    because a sales export cannot tell "nothing sold" from "rows missing".
   - With too little history, a clearly labelled 4-week moving average is
     used instead, and with almost no history no forecast is given at all.
   - An unfinished final week is left out, because its low total would look
@@ -89,7 +93,39 @@ def _moving_average_forecast(daily_values, with_interval):
     return point, lower, upper, True
 
 
+def _seasonal_naive_forecast(daily_values):
+    """
+    Benchmark only: every future day sells the same as that weekday in the last
+    week, so each future week equals the last full week. This is the standard
+    baseline for data with a weekly pattern; a model that cannot beat it adds nothing.
+    """
+    return np.full(HORIZON_WEEKS, float(np.sum(daily_values[-7:])))
+
+
 MODELS = {"sarima": _sarima_forecast, "moving_average": _moving_average_forecast}
+BASELINE_LABELS = {"baseline": "averaging the last 4 weeks", "seasonal_naive": "repeating last week"}
+
+
+# ── Data gaps ─────────────────────────────────────────────────────────────
+
+MIN_GAP_DAYS = 7   # this many days in a row with no sales may mean missing data, not zero demand
+
+
+def find_gaps(daily):
+    """
+    Runs of at least MIN_GAP_DAYS consecutive days with no sales, inside the data's date range.
+    A sales export cannot tell "shop closed / nothing sold" apart from "rows missing from
+    the export", so these days are counted as zero but reported so the seller can check.
+    """
+    gaps, start = [], None
+    for day, units in daily.items():
+        if units == 0 and start is None:
+            start = day
+        elif units != 0 and start is not None:
+            if (day - start).days >= MIN_GAP_DAYS:
+                gaps.append((start, day - pd.Timedelta(days=1)))
+            start = None
+    return [{"start": s.date().isoformat(), "end": e.date().isoformat(), "days": (e - s).days + 1} for s, e in gaps]
 
 
 # ── Accuracy check ────────────────────────────────────────────────────────
@@ -113,17 +149,29 @@ def evaluate(daily_values, model_type):
     actual = _weekly_totals(test)
     predicted = MODELS[model_type](train, with_interval=False)[0]
     baseline = _moving_average_forecast(train, with_interval=False)[0]
+    seasonal = _seasonal_naive_forecast(train)
     mae, mape = _errors(predicted, actual)
     baseline_mae, baseline_mape = _errors(baseline, actual)
+    seasonal_mae, seasonal_mape = _errors(seasonal, actual)
+    r = lambda v: round(v, 1) if v is not None else None
     return {
-        "holdout_weeks": HORIZON_WEEKS,
-        "mape":          round(mape, 1) if mape is not None else None,
-        "mae":           round(mae, 1),
-        "baseline_mape": round(baseline_mape, 1) if baseline_mape is not None else None,
-        "baseline_mae":  round(baseline_mae, 1),
-        "actual":        [round(float(v), 1) for v in actual],
-        "predicted":     [round(float(v), 1) for v in predicted],
+        "holdout_weeks":       HORIZON_WEEKS,
+        "mape":                r(mape),
+        "mae":                 r(mae),
+        "baseline_mape":       r(baseline_mape),        # simple 4-week average
+        "baseline_mae":        r(baseline_mae),
+        "seasonal_naive_mape": r(seasonal_mape),        # repeat last week
+        "seasonal_naive_mae":  r(seasonal_mae),
+        "actual":              [round(float(v), 1) for v in actual],
+        "predicted":           [round(float(v), 1) for v in predicted],
     }
+
+
+def best_baseline(evaluation):
+    """The baseline with the lowest error, as (key, mape) — or None when MAPE is unavailable."""
+    candidates = [(k, evaluation.get(f"{k}_mape")) for k in ("baseline", "seasonal_naive")]
+    candidates = [(k, m) for k, m in candidates if m is not None]
+    return min(candidates, key=lambda c: c[1]) if candidates else None
 
 
 # ── Public entry point ────────────────────────────────────────────────────
@@ -139,6 +187,7 @@ def forecast_demand(rows, sku=None):
             raise ValueError(f"SKU '{sku}' not found in the uploaded data.")
 
     daily = daily_series(rows)
+    gaps = find_gaps(daily)
     total_days = len(daily)
     complete_weeks = total_days // 7
     excluded_days = total_days - complete_weeks * 7
@@ -146,11 +195,17 @@ def forecast_demand(rows, sku=None):
     notes = []
     if excluded_days:
         notes.append(f"The last {excluded_days} day(s) do not make a full week and were left out.")
+    for g in gaps:
+        notes.append(
+            f"No sales were recorded from {g['start']} to {g['end']} ({g['days']} days). These days are counted "
+            f"as zero sales; if your shop was open then, the export may be missing data and the forecast will be too low."
+        )
 
     if complete_weeks < MIN_WEEKS_ANY:
         return {
             "status": "insufficient_data", "model": None, "model_type": None, "sku": sku,
-            "series": [], "evaluation": None, "summary": {"n_weeks": complete_weeks, "excluded_days": excluded_days},
+            "series": [], "evaluation": None,
+            "summary": {"n_weeks": complete_weeks, "excluded_days": excluded_days, "gaps": gaps},
             "notes": notes,
             "plain_explain": (
                 f"Your file covers only {total_days} day(s) of sales. At least {MIN_WEEKS_ANY} full weeks "
@@ -215,6 +270,8 @@ def forecast_demand(rows, sku=None):
         "forecast_avg_weekly": round(forecast_avg, 1),
         "forecast_change_pct": round(change, 1) if change is not None else None,
         "trend":               trend,
+        "zero_sales_days":     int((values == 0).sum()),
+        "gaps":                gaps,
     }
     return {
         "status": "ok",
@@ -247,8 +304,9 @@ def _explain(summary, evaluation, lower, upper):
             f" When tested on your last {HORIZON_WEEKS} weeks of known sales, the forecast was off by "
             f"about {evaluation['mape']:.0f}% on average"
         )
-        if evaluation["baseline_mape"] is not None and evaluation["baseline_mape"] < evaluation["mape"]:
-            text += f" — a simple 4-week average did better ({evaluation['baseline_mape']:.0f}%), so be cautious"
+        best = best_baseline(evaluation)
+        if best and best[1] < evaluation["mape"]:
+            text += f" — simply {BASELINE_LABELS[best[0]]} did better ({best[1]:.0f}%), so be cautious"
         text += "."
     else:
         text += " There is not yet enough history to test how accurate this forecast is."

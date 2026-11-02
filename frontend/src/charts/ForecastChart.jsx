@@ -1,6 +1,7 @@
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useChartColors } from "../hooks/useChartColors";
 import { formatNumber } from "../services/format";
+import { forecastSummary } from "./summaries";
 
 /**
  * Prepares the API series for the chart. The last real week is copied into the
@@ -58,6 +59,7 @@ export default function ForecastChart({ series }) {
           Likely range (90%)
         </span>
       </div>
+      <div role="img" aria-label={forecastSummary(series)}>
       <ResponsiveContainer width="100%" height={300}>
         <ComposedChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
           <CartesianGrid stroke={c["chart-grid"]} vertical={false} />
@@ -71,6 +73,7 @@ export default function ForecastChart({ series }) {
             activeDot={{ r: 5, stroke: c.canvas, strokeWidth: 2, fill: c["chart-forecast"] }} isAnimationActive={false} connectNulls={false} />
         </ComposedChart>
       </ResponsiveContainer>
+      </div>
     </>
   );
 }

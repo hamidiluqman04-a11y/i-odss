@@ -192,6 +192,17 @@ describe("Dashboard", () => {
     expect(within(card).getByRole("cell", { name: "RM 12,900.00" })).toBeInTheDocument();
   });
 
+  it("gives every chart a text alternative for screen readers", async () => {
+    renderWithProviders(<Dashboard data={DASHBOARD} />);
+    expect(await screen.findByRole("img", {
+      name: "Line chart of units sold per week over 2 weeks. Highest: Wk 2, 45 units. Lowest: Wk 1, 40 units. Most recent: Wk 2, 45 units.",
+    })).toBeInTheDocument();
+    expect(screen.getByRole("img", {
+      name: "Bar chart of top products by revenue, 1 bar. Highest: Webcam 1080p, RM 12,900.00. Lowest: Webcam 1080p, RM 12,900.00.",
+    })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /^Bar chart of revenue by category, 2 bars\. Highest: Electronics/ })).toBeInTheDocument();
+  });
+
   it("shows region revenue share", async () => {
     renderWithProviders(<Dashboard data={DASHBOARD} />);
     expect(await screen.findByRole("cell", { name: "38.9%" })).toBeInTheDocument();

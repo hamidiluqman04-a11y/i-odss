@@ -60,7 +60,7 @@ export function Pricing({ data, datasetId }) {
       {data.estimated_count === 0 && (
         <div className="alert alert-info">
           <strong>Your prices did not change enough to measure price sensitivity.</strong>
-          <p className="small" style={{ marginTop: 4 }}>
+          <p className="small" style={{ marginTop: "var(--space-xs)" }}>
             I-ODSS only estimates PED when a product was sold at noticeably different prices (at least 3% apart)
             across at least {data.min_weeks_with_sales} weeks. It does not guess. To collect this evidence, try a
             small planned price change for a few weeks and upload the new data. The promotion simulator below still
@@ -147,12 +147,16 @@ function PricingDetail({ item }) {
           {item.weeks_with_sales} weeks · p-value {formatNumber(item.p_value, 3)} · R² {formatNumber(item.r_squared, 2)}
         </p>
       )}
-      {p && item.test_change_pct !== 0 && (
-        <div className="metric-row">
-          <div><span>Weekly revenue</span><strong>{money(p.weekly_revenue_now)} → {money(p.weekly_revenue_new)}</strong></div>
-          <div><span>Weekly profit (est.)</span><strong>{money(p.weekly_profit_now)} → {money(p.weekly_profit_new)}</strong></div>
-          <div><span>Units per week</span><strong>{formatNumber(p.weekly_units_now, 1)} → {formatNumber(p.weekly_units_new, 1)}</strong></div>
-        </div>
+      {/* Numbers to act on only with reliable evidence (p < 0.05); weak results show the explanation alone. */}
+      {p && item.reliability === "strong" && item.test_change_pct !== 0 && (
+        <>
+          <div className="metric-row">
+            <div><span>Weekly revenue</span><strong>{money(p.weekly_revenue_now)} → {money(p.weekly_revenue_new)}</strong></div>
+            <div><span>Weekly profit (est.)</span><strong>{money(p.weekly_profit_now)} → {money(p.weekly_profit_new)}</strong></div>
+            <div><span>Units per week</span><strong>{formatNumber(p.weekly_units_now, 1)} → {formatNumber(p.weekly_units_new, 1)}</strong></div>
+          </div>
+          {item.assumption && <p className="small secondary"><strong>Assumption:</strong> {item.assumption}</p>}
+        </>
       )}
       <details className="tech"><summary>Technical details</summary><p>{item.xai}</p></details>
     </div>
@@ -230,6 +234,7 @@ function PromoSimulator({ items, datasetId, defaultMargin }) {
             )}
           </div>
           <div className="explain"><strong>Result: </strong>{result.plain_explain}</div>
+          {result.assumption && <p className="small secondary"><strong>Assumption:</strong> {result.assumption}</p>}
         </div>
       )}
     </section>

@@ -109,7 +109,12 @@ function Accuracy({ evaluation: ev, modelType }) {
     );
   }
   const weeks = ev.actual.map((a, i) => ({ week: i + 1, actual: a, predicted: ev.predicted[i] }));
-  const beatsBaseline = ev.mape != null && ev.baseline_mape != null && ev.mape <= ev.baseline_mape;
+  // Benchmarks: a 4-week average, and "repeat last week" (seasonal naive). Older saved results lack the second.
+  const benchmarks = [
+    { name: "averaging the last 4 weeks", mape: ev.baseline_mape },
+    { name: "repeating last week", mape: ev.seasonal_naive_mape ?? null },
+  ].filter((b) => b.mape != null);
+  const better = ev.mape != null ? benchmarks.filter((b) => b.mape < ev.mape) : [];
   return (
     <div className="stack">
       <h3>How accurate is it?</h3>
@@ -121,14 +126,17 @@ function Accuracy({ evaluation: ev, modelType }) {
         <div><span>Average error (MAPE)</span><strong>{ev.mape != null ? `${formatNumber(ev.mape, 1)}%` : "n/a"}</strong></div>
         <div><span>Average error (units)</span><strong>{formatNumber(ev.mae, 1)}</strong></div>
         {modelType === "sarima" && (
-          <div><span>Simple average's error</span><strong>{ev.baseline_mape != null ? `${formatNumber(ev.baseline_mape, 1)}%` : "n/a"}</strong></div>
+          <div><span>4-week average's error</span><strong>{ev.baseline_mape != null ? `${formatNumber(ev.baseline_mape, 1)}%` : "n/a"}</strong></div>
+        )}
+        {ev.seasonal_naive_mape !== undefined && (
+          <div><span>"Repeat last week" error</span><strong>{ev.seasonal_naive_mape != null ? `${formatNumber(ev.seasonal_naive_mape, 1)}%` : "n/a"}</strong></div>
         )}
       </div>
-      {modelType === "sarima" && ev.mape != null && ev.baseline_mape != null && (
+      {ev.mape != null && benchmarks.length > 0 && (
         <p className="small secondary">
-          {beatsBaseline
-            ? "The SARIMA model was at least as accurate as simply averaging the last 4 weeks."
-            : "A simple 4-week average was more accurate here — treat the forecast with caution."}
+          {better.length === 0
+            ? `The forecast was at least as accurate as simply ${benchmarks.map((b) => b.name).join(" or ")}.`
+            : `Simply ${better.map((b) => b.name).join(" or ")} was more accurate here — treat the forecast with caution.`}
         </p>
       )}
       <div className="table-wrap">

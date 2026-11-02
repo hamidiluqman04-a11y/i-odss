@@ -66,18 +66,43 @@ def test_too_few_weeks_gives_no_ped():
     assert "only 5 different week(s)" in item["plain_explain"]
 
 
-def test_unclear_relationship_gives_no_advice():
-    # Price and units are arranged so that they are completely unrelated.
+def unrelated_rows():
+    """Price and units arranged so that they are completely unrelated (p = 1)."""
     units = {0: 100, 1: 100, 2: 120, 3: 120}
-    prices = [8, 12, 8, 12] * 3
-    rows = make_rows(prices, lambda p: 0)
+    rows = make_rows([8, 12, 8, 12] * 3, lambda p: 0)
     for r in rows:
         r["qty"] = units[((r["date"] - START).days // 7) % 4]
-    item = item_for(rows)
+    return rows
+
+
+def test_unclear_relationship_gives_no_advice():
+    item = item_for(unrelated_rows())
     assert item["status"] == "estimated"
     assert item["reliability"] == "weak"
+    assert item["p_value"] >= 0.05
     assert item["recommendation"] == "no_recommendation"
     assert "did not move in a clear pattern" in item["plain_explain"]
+
+
+def test_weak_evidence_carries_nothing_to_act_on():
+    """p >= 0.05 must remove the advice entirely, not just soften its wording."""
+    item = item_for(unrelated_rows())
+    assert item["projection"] is None
+    assert item["test_change_pct"] == 0
+    assert item["test_price"] is None
+    assert item["assumption"] is None
+    for word in ("raising", "lowering", "increase", "decrease", "profit"):
+        assert word not in item["plain_explain"].lower()
+
+
+def test_promo_with_weak_evidence_gives_break_even_only():
+    result = simulate_promo(unrelated_rows(), "A", 10)
+    assert result["reliability"] == "weak"
+    assert result["projection"] is None
+    assert result["volume_change_pct"] is None
+    assert result["is_profitable_estimate"] is None
+    assert result["break_even_volume_increase_pct"] == 33.3
+    assert "cannot predict" in result["plain_explain"]
 
 
 def test_sales_rising_with_price_gives_no_advice():
@@ -140,6 +165,31 @@ def test_projection_hand_calculated():
     }
 
 
+def test_projection_assumes_constant_elasticity_even_for_a_large_change():
+    """
+    Documents the model's limitation: a 20% price cut is projected with the SAME
+    elasticity as a 5% one. Units scale by 0.8^-1.5 = 1.398 (+39.8%), whereas a
+    straight-line demand curve with the same slope would give +30%. Real buyers
+    may react very differently to large changes, so the UI labels this assumption.
+    """
+    import math
+    small = project(100, 10, -1.5, 0.40, -0.05)
+    large = project(100, 10, -1.5, 0.40, -0.20)
+    assert large["weekly_units_new"] == pytest.approx(139.75, abs=0.01)
+    implied = lambda p, change: math.log(p["weekly_units_new"] / 100) / math.log(1 + change)
+    assert implied(small, -0.05) == pytest.approx(-1.5, abs=1e-3)
+    assert implied(large, -0.20) == pytest.approx(-1.5, abs=1e-3)       # same elasticity at any size
+    linear_estimate = 100 * (1 + 1.5 * 0.20)
+    assert large["weekly_units_new"] - linear_estimate > 9                 # the two models diverge
+
+
+def test_projection_states_its_assumption():
+    from apps.analytics.services.pricing import CONSTANT_ELASTICITY_NOTE
+    item = item_for(make_rows(PRICES_12_WEEKS, constant_elasticity(-0.4)))
+    assert item["projection"] is not None
+    assert item["assumption"] == CONSTANT_ELASTICITY_NOTE
+
+
 @pytest.mark.parametrize("bad", [0, 1, -0.1])
 def test_invalid_margin_rejected(bad):
     with pytest.raises(ValueError):
@@ -179,6 +229,26 @@ def test_promo_projection_uses_estimated_ped_and_correct_profit():
     # PED -2: units rise ~23%, below the 33% break-even, so profit falls.
     assert result["volume_change_pct"] == pytest.approx(23.5, abs=0.5)
     assert result["is_profitable_estimate"] is False
+
+
+def test_promo_flags_prices_below_anything_in_the_data():
+    rows = make_rows(PRICES_12_WEEKS, constant_elasticity(-2.0))   # prices seen: 8 to 12, current 10
+    within = simulate_promo(rows, "A", 10)                         # 9.00: inside the observed range
+    beyond = simulate_promo(rows, "A", 30)                         # 7.00: below the lowest price, 8
+    assert within["beyond_observed_prices"] is False
+    assert beyond["beyond_observed_prices"] is True
+    assert beyond["lowest_price_seen"] == 8.0
+    assert "lower than any price in your data" in beyond["plain_explain"]
+    assert beyond["assumption"].startswith("Assumes buyers react")
+
+
+def test_promo_works_with_results_saved_before_price_range_existed():
+    from apps.analytics.services.pricing import simulate_promo_from
+    old_inputs = {"product": "X", "current_price": 10.0, "weekly_units": 100.0,
+                  "ped_status": "estimated", "ped": -2.0, "reliability": "strong"}
+    result = simulate_promo_from("A", old_inputs, 30)
+    assert result["beyond_observed_prices"] is False
+    assert result["lowest_price_seen"] is None
 
 
 def test_promo_fixes_legacy_profit_formula():

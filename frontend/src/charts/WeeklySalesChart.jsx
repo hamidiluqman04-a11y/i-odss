@@ -1,6 +1,7 @@
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useChartColors } from "../hooks/useChartColors";
 import { formatNumber } from "../services/format";
+import { weeklySalesSummary } from "./summaries";
 
 function WeekTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -16,6 +17,7 @@ function WeekTooltip({ active, payload, label }) {
 export default function WeeklySalesChart({ data }) {
   const c = useChartColors();
   return (
+    <div role="img" aria-label={weeklySalesSummary(data)}>
     <ResponsiveContainer width="100%" height={260}>
       <AreaChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
         <CartesianGrid stroke={c["chart-grid"]} vertical={false} />
@@ -32,5 +34,6 @@ export default function WeeklySalesChart({ data }) {
         />
       </AreaChart>
     </ResponsiveContainer>
+    </div>
   );
 }

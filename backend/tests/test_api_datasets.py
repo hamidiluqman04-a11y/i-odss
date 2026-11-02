@@ -119,6 +119,18 @@ def test_file_over_size_limit_is_413(api):
     assert r.json()["error"]["type"] == "file_too_large"
 
 
+def test_real_upload_just_over_10_mb_is_413(api, settings):
+    """With the real 10 MB limit (no override): a file 1 KB over it is refused before parsing."""
+    assert settings.FILE_UPLOAD_MAX_MEMORY_SIZE == 10 * 1024 * 1024
+    row = b"O1,2025-01-01,A,1,10\n"
+    body = b"OrderID,Date,SKU,Quantity,UnitPrice\n" + row * ((settings.FILE_UPLOAD_MAX_MEMORY_SIZE + 1024) // len(row) + 1)
+    assert len(body) > settings.FILE_UPLOAD_MAX_MEMORY_SIZE
+    r = upload(api, "big.csv", body)
+    assert r.status_code == 413
+    assert r.json()["error"] == {"type": "file_too_large", "message": "The file is too large. The maximum size is 10 MB."}
+    assert not Dataset.objects.exists()
+
+
 def test_upload_requires_login(client, db):
     assert client.post("/api/datasets/", {"file": csv_file("data_beauty.csv")}).status_code == 403
 

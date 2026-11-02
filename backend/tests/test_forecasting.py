@@ -164,3 +164,64 @@ def test_explanation_is_cautious():
     text = forecast_demand(make_rows(pattern_days(12)))["plain_explain"]
     assert "not a guarantee" in text
     assert "off by about" in text
+
+
+# ── Seasonal-naive benchmark ──────────────────────────────────────────────
+
+def test_seasonal_naive_baseline_is_measured():
+    rng = np.random.default_rng(4)
+    days = [max(1, q + rng.integers(-3, 4)) for q in pattern_days(12)]
+    ev = forecast_demand(make_rows(days))["evaluation"]
+    # Hand check: it predicts every held-back week = the last training week's total.
+    train_last_week = sum(days[-28 - 7:-28])
+    actual = np.array(ev["actual"])
+    expected_mape = np.mean(np.abs(train_last_week - actual) / actual) * 100
+    assert ev["seasonal_naive_mape"] == pytest.approx(expected_mape, abs=0.2)
+    assert ev["seasonal_naive_mae"] == pytest.approx(np.mean(np.abs(train_last_week - actual)), abs=0.2)
+
+
+def test_seasonal_naive_is_perfect_on_a_repeating_week():
+    """A pure weekly pattern is exactly what 'repeat last week' captures."""
+    ev = forecast_demand(make_rows(pattern_days(12)))["evaluation"]
+    assert ev["seasonal_naive_mape"] == 0.0
+
+
+def test_explanation_names_the_baseline_that_did_better(monkeypatch):
+    rows = make_rows(pattern_days(12))
+    real = forecasting.evaluate
+
+    def worse_model(values, model_type):
+        ev = real(values, model_type)
+        return {**ev, "mape": 50.0}
+
+    monkeypatch.setattr(forecasting, "evaluate", worse_model)
+    text = forecast_demand(rows)["plain_explain"]
+    # Both benchmarks score 0% on a perfectly repeating week; either may be named.
+    assert ("simply repeating last week did better (0%)" in text
+            or "simply averaging the last 4 weeks did better (0%)" in text)
+
+
+def test_best_baseline_picks_the_lowest_error():
+    assert forecasting.best_baseline({"baseline_mape": 12.0, "seasonal_naive_mape": 8.0}) == ("seasonal_naive", 8.0)
+    assert forecasting.best_baseline({"baseline_mape": 5.0, "seasonal_naive_mape": 8.0}) == ("baseline", 5.0)
+    assert forecasting.best_baseline({"baseline_mape": None, "seasonal_naive_mape": None}) is None
+
+
+# ── Gaps: "no data" versus "no sales" ─────────────────────────────────────
+
+def test_long_run_without_sales_is_flagged_as_possible_missing_data():
+    days = pattern_days(10)
+    days[21:31] = [0] * 10                      # 10 empty days in weeks 4-5
+    result = forecast_demand(make_rows(days))
+    assert result["summary"]["gaps"] == [{"start": "2025-01-27", "end": "2025-02-05", "days": 10}]
+    assert result["summary"]["zero_sales_days"] == 10
+    assert any("export may be missing data" in n for n in result["notes"])
+
+
+def test_short_quiet_spells_are_not_flagged():
+    days = pattern_days(10)
+    days[21:27] = [0] * 6                       # 6 days: below the 7-day threshold
+    result = forecast_demand(make_rows(days))
+    assert result["summary"]["gaps"] == []
+    assert result["summary"]["zero_sales_days"] == 6
+    assert not any("missing data" in n for n in result["notes"])

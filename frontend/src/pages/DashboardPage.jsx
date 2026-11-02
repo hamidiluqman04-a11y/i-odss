@@ -72,7 +72,7 @@ export function Dashboard({ data }) {
           ]}
           rows={top}
         >
-          <HorizontalBarChart data={top} formatValue={money} formatTick={shortMoney} />
+          <HorizontalBarChart data={top} formatValue={money} formatTick={shortMoney} label="Bar chart of top products by revenue" />
         </ChartCard>
         <ChartCard
           title="Revenue by category"
@@ -82,7 +82,7 @@ export function Dashboard({ data }) {
           ]}
           rows={categories}
         >
-          <HorizontalBarChart data={categories} formatValue={money} formatTick={shortMoney} />
+          <HorizontalBarChart data={categories} formatValue={money} formatTick={shortMoney} label="Bar chart of revenue by category" />
         </ChartCard>
       </div>
 

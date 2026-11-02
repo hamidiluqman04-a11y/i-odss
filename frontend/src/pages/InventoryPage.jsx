@@ -53,7 +53,7 @@ export function Inventory({ data }) {
       {!data.stock_data_available && (
         <div className="alert alert-info">
           <strong>Your file has no stock levels, so I-ODSS cannot tell what needs restocking.</strong>
-          <p className="small" style={{ marginTop: 4 }}>
+          <p className="small" style={{ marginTop: "var(--space-xs)" }}>
             The reorder points below are still calculated from your sales. To get restock alerts, add a column such
             as <em>Stock</em> or <em>Stock on hand</em> with the quantity you had on each date, and upload again.
           </p>

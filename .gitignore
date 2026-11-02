@@ -29,6 +29,11 @@ frontend/dist/
 # Playwright MCP screenshots and logs
 .playwright-mcp/
 
+# Local AI/editor tooling (machine-specific paths and settings)
+.mcp.json
+.claude/
+.impeccable/
+
 # Editors / OS
 .vscode/
 .idea/

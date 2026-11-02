@@ -1,5 +1,6 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useChartColors } from "../hooks/useChartColors";
+import { barSummary } from "./summaries";
 
 function BarTooltip({ active, payload, formatValue }) {
   if (!active || !payload?.length) return null;
@@ -16,12 +17,13 @@ function BarTooltip({ active, payload, formatValue }) {
  * Ranked horizontal bars for one measure. All bars share one colour: the
  * categories (products, categories) have no natural order, and bar length
  * already shows size.
- * `data`: [{ label, value }]
+ * `data`: [{ label, value }]; `label` names the chart for screen readers.
  */
-export default function HorizontalBarChart({ data, formatValue, formatTick }) {
+export default function HorizontalBarChart({ data, formatValue, formatTick, label }) {
   const c = useChartColors();
   const height = Math.max(120, data.length * 36 + 36);
   return (
+    <div role="img" aria-label={barSummary(data, formatValue, label)}>
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, bottom: 4, left: 0 }} barCategoryGap={8}>
         <CartesianGrid stroke={c["chart-grid"]} horizontal={false} />
@@ -38,5 +40,6 @@ export default function HorizontalBarChart({ data, formatValue, formatTick }) {
         <Bar dataKey="value" fill={c["chart-bar"]} radius={[0, 4, 4, 0]} maxBarSize={18} isAnimationActive={false} />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
