@@ -276,27 +276,56 @@ The "Quick Demo Access" button was removed on purpose: it skipped login entirely
 
 ---
 
-## 9. Deployment checklist
+## 9. Deploying online (Render)
 
-Before putting I-ODSS on a public server:
+The repository includes everything Render needs: a `Dockerfile` (builds the React app,
+then runs Django with gunicorn; Django serves the website **and** `/api` from one address)
+and a `render.yaml` blueprint (that web service plus a PostgreSQL database).
 
-- [ ] `DJANGO_DEBUG=False`. Debug mode shows internal details on error pages.
-- [ ] `DJANGO_SECRET_KEY` is a new long random value, different from development.
-- [ ] `DJANGO_ALLOWED_HOSTS` lists only your domain, e.g. `iodss.example.com`.
-- [ ] `DJANGO_CSRF_TRUSTED_ORIGINS` lists your HTTPS address, e.g. `https://iodss.example.com`.
-- [ ] The site is served over HTTPS, then `DJANGO_HTTPS=True` (secure cookies, HTTP→HTTPS
+1. Push your branch to GitHub.
+2. In the [Render dashboard](https://dashboard.render.com): **New → Blueprint**, choose this
+   repository, and press **Apply**. Do **not** create a plain "Python" web service: this
+   project has no `requirements.txt` at the repository root (it is in `backend/`), which is
+   why a Python service fails with "requirements.txt not found".
+3. When asked, type a password for **DEMO_USER_PASSWORD** (the demo login). Everything else
+   is filled in automatically: a random `DJANGO_SECRET_KEY`, the database connection, HTTPS.
+4. Wait for the first build (about 5–10 minutes). Open the `https://iodss-….onrender.com`
+   address Render shows and log in with `demo@iodss.local` and the password you typed.
+
+Every push to the branch redeploys automatically. On every start the container updates the
+database tables and (re)creates the demo account.
+
+Things to know about Render's **free** plan:
+- The web service sleeps after 15 minutes without visitors; the next visit takes about a
+  minute to wake it. Open the site a few minutes before a demo or presentation.
+- A free PostgreSQL database expires after 30 days (Render emails you first). Upgrade it,
+  or create a new one, before then if you need the data to stay.
+
+To try the production image on your own computer (needs Docker), see `Dockerfile`.
+
+## 10. Deployment checklist
+
+Before putting I-ODSS on a public server (the Render blueprint already does the items marked ✓):
+
+- [ ] ✓ `DJANGO_DEBUG=False`. Debug mode shows internal details on error pages.
+- [ ] ✓ `DJANGO_SECRET_KEY` is a new long random value, different from development.
+- [ ] ✓ `DJANGO_ALLOWED_HOSTS` lists only your domain (on Render the `onrender.com`
+      address is added automatically; add a custom domain here if you use one).
+- [ ] ✓ `DJANGO_CSRF_TRUSTED_ORIGINS` lists your HTTPS address (automatic on Render).
+- [ ] ✓ The site is served over HTTPS, then `DJANGO_HTTPS=True` (secure cookies, HTTP→HTTPS
       redirect, HSTS). Raise `DJANGO_HSTS_SECONDS` to `31536000` once HTTPS is stable.
-- [ ] Database password is strong and the database is not reachable from the internet.
-- [ ] Django runs under a production server (e.g. `gunicorn` or `waitress`), not `runserver`.
-- [ ] The React app is built with `npm run build`, and `frontend/dist` is served by a web
-      server that also forwards `/api/` to Django (same origin, so login cookies work).
-- [ ] Rate limits use a shared cache if more than one server process runs.
+- [ ] ✓ Database password is strong and the database is not reachable from the internet.
+- [ ] ✓ Django runs under a production server (`gunicorn`), not `runserver`.
+- [ ] ✓ The React app is built with `npm run build` and served from the same address as
+      `/api/` (Django + WhiteNoise in the Docker image), so login cookies work.
+- [ ] Rate limits use a shared cache if more than one server process runs (the image runs
+      2 gunicorn workers, each with its own counter — acceptable for a demo).
 - [ ] `..\.venv\Scripts\python manage.py check --deploy` shows no warnings except
       `security.W021` (HSTS preload, which is optional and hard to undo).
 
 ---
 
-## 10. Working safely with Git
+## 11. Working safely with Git
 
 - See what changed: `git status`, then `git diff` (or `git diff --staged`).
 - Undo uncommitted changes to one file: `git restore path\to\file`.

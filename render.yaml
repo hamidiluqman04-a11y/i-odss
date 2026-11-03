@@ -1,0 +1,40 @@
+# Render Blueprint: one web service (Docker) + one PostgreSQL database.
+# In Render: New → Blueprint → pick this repository → Apply.
+# You will be asked once for DEMO_USER_PASSWORD (the demo login's password).
+
+databases:
+  - name: iodss-db
+    plan: free
+    region: malaysia
+    databaseName: iodss
+    user: iodss
+
+services:
+  - type: web
+    name: iodss
+    runtime: docker
+    plan: free
+    region: malaysia
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true           # Render creates a random secret
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_HTTPS
+        value: "True"                 # Render serves the site over HTTPS
+      - key: DB_NAME
+        fromDatabase: { name: iodss-db, property: database }
+      - key: DB_USER
+        fromDatabase: { name: iodss-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: iodss-db, property: password }
+      - key: DB_HOST
+        fromDatabase: { name: iodss-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: iodss-db, property: port }
+      - key: DEMO_USER_EMAIL
+        value: demo@iodss.local
+      - key: DEMO_USER_PASSWORD
+        sync: false                   # you type this in Render; it is never stored in Git

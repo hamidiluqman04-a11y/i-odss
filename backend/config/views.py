@@ -1,6 +1,8 @@
 import logging
 
+from django.conf import settings
 from django.db import connection
+from django.http import FileResponse, Http404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -27,3 +29,17 @@ def health(request):
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
     return Response({"service": SERVICE_NAME, "status": "ok", "database": "ok"})
+
+
+def react_app(request):
+    """
+    Production only: return the built React app's index.html for page addresses
+    such as /forecast, so React's router can show the right page (also after a refresh).
+    In development there is no build, and the Vite dev server serves the pages instead.
+    """
+    index = settings.FRONTEND_DIST / "index.html"
+    if not index.is_file():
+        raise Http404("The React app has not been built.")
+    response = FileResponse(index.open("rb"), content_type="text/html")
+    response["Cache-Control"] = "no-cache"   # always fetch the latest build's page
+    return response
